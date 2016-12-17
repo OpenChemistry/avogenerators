@@ -1,0 +1,17 @@
+{
+  "author": "David Lonie",
+  "version": 1.0,
+  "url": "https://github.com/openchemistry/avogenerators",
+  "name": "avogenerators",
+  "description": "Scripts for generating input files for computational chemistry packages",
+  "commands": [
+    { "name": "APBS", "command": "apbs" },
+    { "name": "GAMESS-UK", "command": "gamessuk" },
+    { "name": "Gaussian", "command": "gaussian" },
+    { "name": "MOLPRO", "command": "molpro" },
+    { "name": "MOPAC", "command": "mopac" },
+    { "name": "NWChem", "command": "nwchem" },
+    { "name": "Q-Chem", "command": "qchem" },
+    { "name": "TeraChem", "command": "terachem" },
+  ]
+}
