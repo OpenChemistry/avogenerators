@@ -39,9 +39,9 @@ def getOptions():
 
     userOptions['Theory'] = {}
     userOptions['Theory']['type'] = "stringList"
-    userOptions['Theory']['default'] = 2
+    userOptions['Theory']['default'] = 3
     userOptions['Theory']['values'] = \
-        ['AM1', 'PM3', 'PM6', 'RM1', 'MNDO', 'MNDOD']
+        ['AM1', 'PM3', 'PM6', 'PM7', 'RM1', 'MNDO', 'MNDOD']
 
     userOptions['Filename Base'] = {}
     userOptions['Filename Base']['type'] = 'string'
