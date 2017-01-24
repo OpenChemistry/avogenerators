@@ -12,6 +12,6 @@
     { "name": "MOPAC", "command": "mopac" },
     { "name": "NWChem", "command": "nwchem" },
     { "name": "Q-Chem", "command": "qchem" },
-    { "name": "TeraChem", "command": "terachem" },
+    { "name": "TeraChem", "command": "terachem" }
   ]
 }
