@@ -1,11 +1,12 @@
 {
-  "author": "David Lonie",
+  "author": "Allison Vacanti",
   "version": 1.0,
   "url": "https://github.com/openchemistry/avogenerators",
   "name": "avogenerators",
   "description": "Scripts for generating input files for computational chemistry packages",
   "commands": [
     { "name": "APBS", "command": "apbs" },
+    { "name": "Dalton", "command": "dalton" },
     { "name": "GAMESS-UK", "command": "gamessuk" },
     { "name": "Gaussian", "command": "gaussian" },
     { "name": "MOLPRO", "command": "molpro" },
