@@ -61,7 +61,8 @@ def getOptions():
     userOptions['Solvation']['default'] = 0
     userOptions['Solvation']['toolTip'] = 'Solvent or dielectric for calculations'
     userOptions['Solvation']['values'] = \
-        ['None (gas phase)','']
+        ['None (vacuum)', 'Acetonitrile', 'CH2Cl2', 'Chloroform', 'Ethanol',
+        'Hexane', 'THF', 'Water']
 
     userOptions['Filename Base'] = {}
     userOptions['Filename Base']['type'] = 'string'
@@ -106,8 +107,12 @@ def generateInputFile(opts):
     else:
         raise Exception('Unhandled calculation type: %s' % calculate)
 
+    solvation = ''
+    if not 'None' in opts['Solvation']:
+        solvation = 'CPCM({})'.format(opts['Solvation'])
+
     # put the pieces together
-    code = '{} {} {}'.format(calcStr, theory, basis)
+    code = '{} {} {} {}'.format(calcStr, theory, basis, solvation)
 
     output = ''
 
