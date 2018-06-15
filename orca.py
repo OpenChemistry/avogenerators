@@ -42,11 +42,10 @@ def getOptions():
 
     userOptions['Theory'] = {}
     userOptions['Theory']['type'] = 'stringList'
-    userOptions['Theory']['default'] = 2
+    userOptions['Theory']['default'] = 7
     userOptions['Theory']['toolTip'] = 'Hamiltonian or DFT method to use'
     userOptions['Theory']['values'] = \
-        ['HF', 'MP2', 'CCSD', 'BLYP', 'PBE', 'B3LYP', 'M06-2X',
-        'B97', 'wB97X' ]
+        ['HF', 'MP2', 'CCSD', 'BLYP', 'PBE', 'B3LYP', 'B97', 'wB97X' ]
 
     userOptions['Basis'] = {}
     userOptions['Basis']['type'] = 'stringList'
@@ -54,15 +53,15 @@ def getOptions():
     userOptions['Basis']['toolTip'] = 'Gaussian basis set'
     userOptions['Basis']['values'] = \
         ['6-31G(d)', 'cc-pVDZ', 'aug-cc-pVTZ', 'def2-SVP', 'ma-def2-SVP',
-        'def2-SVPD', 'def2-TZVP', 'def2-QZVP', 'pc-2', 'aug-pc-2', 'pc-3']
+        'def2-SVPD', 'def2-TZVP', 'def2-QZVP', 'pc-2', 'aug-pc-2']
 
     userOptions['Solvation'] = {}
     userOptions['Solvation']['type'] = 'stringList'
     userOptions['Solvation']['default'] = 0
     userOptions['Solvation']['toolTip'] = 'Solvent or dielectric for calculations'
     userOptions['Solvation']['values'] = \
-        ['None (vacuum)', 'Acetonitrile', 'CH2Cl2', 'Chloroform', 'Ethanol',
-        'Hexane', 'THF', 'Water']
+        ['None (gas)', 'Water', 'Acetonitrile', 'Acetone', 'CH2Cl2',
+        'Chloroform', 'DMSO', 'Ethanol', 'Hexane', 'Pyridine', 'THF', 'Toluene']
 
     userOptions['Filename Base'] = {}
     userOptions['Filename Base']['type'] = 'string'
