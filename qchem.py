@@ -42,7 +42,7 @@ def getOptions():
     userOptions['Theory']['type'] = "stringList"
     userOptions['Theory']['default'] = 2
     userOptions['Theory']['values'] = \
-        ['RHF', 'MP2', 'B3LYP', 'B3LYP5', 'EDF1', 'M062X', 'CCSD']
+        ['HF', 'MP2', 'B3LYP', 'B3LYP5', 'EDF1', 'M062X', 'CCSD']
 
     userOptions['Basis'] = {}
     userOptions['Basis']['type'] = "stringList"
@@ -95,10 +95,8 @@ def generateInputFile(opts):
         raise Exception('Unhandled calculation type: %s' % calculate)
 
     theoryStr = ''
-    if theory in ['RHF', 'B3LYP', 'B3LYP5', 'EDF1', 'M062X']:
+    if theory in ['HF', 'B3LYP', 'B3LYP5', 'EDF1', 'M062X', 'MP2', 'CCSD']:
         theoryStr = theory
-    elif theory in ['MP2', 'CCSD']:
-        theoryStr = 'HF\n   CORRELATION %s' % theory
     else:
         raise Exception('Unhandled theory type: %s' % theory)
 
@@ -115,9 +113,9 @@ def generateInputFile(opts):
 
     output += '$rem\n'
     output += '   JOBTYPE %s\n' % calcStr
-    output += '   EXCHANGE %s\n' % theoryStr
+    output += '   METHOD %s\n' % theoryStr
     output += '   %s\n' % basisStr
-    output += '   GUI=2\n'
+    output += '   GUI 2\n'
     output += '$end\n\n'
 
     output += '$comment\n   %s\n$end\n\n' % title
