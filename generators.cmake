@@ -1,6 +1,5 @@
 # List all generators that should be installed by default here.
 set(input_generators
-  apbs.py
   dalton.py
   gamessuk.py
   gaussian.py
