@@ -14,7 +14,9 @@ import sys
 targetName = 'PYSCF'
 extension = 'py'
 debug = False
-basis_list = ['STO-3G','3-21g','cc-pvdz']
+basis_list = ['STO-3G', '3-21g', 'cc-pvdz']
+theory_list = ['RHF', 'ROHF', 'UHF', 'MP2']
+
 
 def getOptions():
     userOptions = {}
@@ -32,8 +34,7 @@ def getOptions():
     userOptions['Theory'] = {}
     userOptions['Theory']['type'] = 'stringList'
     userOptions['Theory']['default'] = 0
-    userOptions['Theory']['values'] = [
-        'RHF','MP2']
+    userOptions['Theory']['values'] = theory_list
 
     userOptions['Basis'] = {}
     userOptions['Basis']['type'] = 'stringList'
@@ -81,7 +82,6 @@ def generateInputFile(cjson, opts):
             basisStr = pybasis
         else:
             basisStr = basis
-
     else:
         raise Exception('Unhandled basis type: {}'.format(basis))
 
@@ -92,13 +92,27 @@ def generateInputFile(cjson, opts):
         theoryImport = "from pyscf import gto,scf\n"
         theoryLines.append('mf = scf.{}(mol)\n'.format(theory))
         theoryLines.append('mf.kernel()\n')
+    elif theory == 'ROHF':
+        theoryImport = "from pyscf import gto,scf\n"
+        theoryLines.append('mf = scf.{}(mol)\n'.format(theory))
+        theoryLines.append('Amf.kernel()\n')
+    elif theory == 'UHF':
+        theoryImport = "from pyscf import gto,scf\n"
+        theoryLines.append('mf = scf.{}(mol)\n'.format(theory))
+        theoryLines.append('mf.kernel()\n')
     elif theory == 'MP2':
         theoryImport = "from pyscf import gto,scf,mp\n"
         theoryLines.append('# Must run SCF before MP2 in PYSCF\n')
-        theoryLines.append('mf = scf.RHF(mol)\n')
-        theoryLines.append('mf.kernel()\n')
-        theoryLines.append('mf2 = mp.{}(mf)\n'.format(theory))
-        theoryLines.append('mf2.kernel()\n')
+        if multiplicity == 1:
+            theoryLines.append('mf = scf.RHF(mol)\n')
+            theoryLines.append('mf.kernel()\n')
+            theoryLines.append('mf2 = mp.{}(mf)\n'.format(theory))
+            theoryLines.append('mf2.kernel()\n')
+        else:
+            theoryLines.append('mf = scf.UHF(mol)\n')
+            theoryLines.append('mf.kernel()\n')
+            theoryLines.append('mf2 = mp.{}(mf)\n'.format(theory))
+            theoryLines.append('mf2.kernel()\n')
     else:
         raise Exception('Unhandled theory type:'.format(theory))
 
@@ -110,10 +124,8 @@ def generateInputFile(cjson, opts):
 
     # Create input file
     output = ''
-
     output += "# Title: {}\n".format(title)
     output += "{}".format(theoryImport)
-
     output += "mol = gto.Mole()\n"
     output += "mol.atom = '''\n"
     output += '$$coords:___Sxyz$$\n'
@@ -155,8 +167,10 @@ def generateInput():
     result['mainFile'] = '{}.{}'.format(baseName, extension)
     return result
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser('Generate a {} input file.'.format(targetName))
+    parser = argparse.ArgumentParser(
+        'Generate a {} input file.'.format(targetName))
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--print-options', action='store_true')
     parser.add_argument('--generate-input', action='store_true')
