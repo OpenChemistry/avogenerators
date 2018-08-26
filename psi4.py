@@ -11,7 +11,7 @@ import json
 import sys
 
 # Some globals:
-targetName = 'ORCA'
+targetName = 'Psi'
 debug = False
 
 
@@ -35,7 +35,8 @@ def getOptions():
     userOptions['Theory']['default'] = 7
     userOptions['Theory']['toolTip'] = 'Hamiltonian or DFT method to use'
     userOptions['Theory']['values'] = \
-        ['HF', 'MP2', 'CCSD', 'BLYP', 'PBE', 'B3LYP', 'B97', 'wB97X' ]
+        ['HF', 'MP2', 'CCSD', 'CCSD(T)', 'B3LYP-D', 'B97-D', 'wB97X-D',
+        'SAPT0', 'SAPT2' ]
 
     userOptions['Basis'] = {}
     userOptions['Basis']['type'] = 'stringList'
@@ -44,18 +45,6 @@ def getOptions():
     userOptions['Basis']['values'] = \
         ['6-31G(d)', 'cc-pVDZ', 'aug-cc-pVTZ', 'def2-SVP', 'ma-def2-SVP',
         'def2-SVPD', 'def2-TZVP', 'def2-QZVP', 'pc-2', 'aug-pc-2']
-
-    userOptions['Solvation'] = {}
-    userOptions['Solvation']['type'] = 'stringList'
-    userOptions['Solvation']['default'] = 0
-    userOptions['Solvation']['toolTip'] = 'Solvent or dielectric for calculations'
-    userOptions['Solvation']['values'] = \
-        ['None (gas)', 'Water', 'Acetonitrile', 'Acetone',
-        'Ethanol', 'Methanol',
-        'CH2Cl2', 'Chloroform',
-        'DMSO', 'DMF',
-        'Hexane', 'Toluene',
-        'Pyridine', 'THF']
 
     userOptions['Filename Base'] = {}
     userOptions['Filename Base']['type'] = 'string'
@@ -92,30 +81,23 @@ def generateInputFile(opts):
     # Convert to code-specific strings
     calcStr = ''
     if calculate == 'Single Point':
-        calcStr = 'SP'
+        calcStr = 'energy'
     elif calculate == 'Geometry Optimization':
-        calcStr = 'Opt'
+        calcStr = 'optimize'
     elif calculate == 'Frequencies':
-        calcStr = 'Opt Freq'
+        calcStr = 'frequencies'
     else:
         raise Exception('Unhandled calculation type: %s' % calculate)
 
-    solvation = ''
-    if not 'None' in opts['Solvation']:
-        solvation = 'CPCM({})'.format(opts['Solvation'])
-
-    # put the pieces together
-    code = '{} {} {} {}'.format(calcStr, theory, basis, solvation)
-
     output = ''
-
-    output += '# avogadro generated ORCA file\n'
-    output += '# ' + title + '\n'
-    output += '# \n'
-    output += '! {}\n\n'.format(code)
+    output += 'set basis {}\n'.format(basis)
+    output += 'molecule {\n'
     output += '* xyz {} {}\n'.format(charge, multiplicity)
     output += '$$coords:___Sxyz$$\n'
-    output += '*\n\n\n'
+    output += '}\n'
+    if 'SAPT' in theory:
+        output += 'auto_fragments(\'\')\n'
+    output += '{}({})\n'.format(calcStr, theory)
 
     return output
 
