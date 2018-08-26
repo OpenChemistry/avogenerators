@@ -7,6 +7,7 @@ set(input_generators
   mopac.py
   nwchem.py
   orca.py
+  psi4.py
   qchem.py
   terachem.py
   )
