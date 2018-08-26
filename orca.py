@@ -50,8 +50,12 @@ def getOptions():
     userOptions['Solvation']['default'] = 0
     userOptions['Solvation']['toolTip'] = 'Solvent or dielectric for calculations'
     userOptions['Solvation']['values'] = \
-        ['None (gas)', 'Water', 'Acetonitrile', 'Acetone', 'CH2Cl2',
-        'Chloroform', 'DMSO', 'Ethanol', 'Hexane', 'Pyridine', 'THF', 'Toluene']
+        ['None (gas)', 'Water', 'Acetonitrile', 'Acetone',
+        'Ethanol', 'Methanol',
+        'CH2Cl2', 'Chloroform',
+        'DMSO', 'DMF',
+        'Hexane', 'Toluene',
+        'Pyridine', 'THF']
 
     userOptions['Filename Base'] = {}
     userOptions['Filename Base']['type'] = 'string'
