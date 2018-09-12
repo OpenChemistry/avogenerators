@@ -8,6 +8,7 @@ set(input_generators
   nwchem.py
   orca.py
   psi4.py
+  pyscf.py
   qchem.py
   terachem.py
   )
