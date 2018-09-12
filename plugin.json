@@ -12,6 +12,7 @@
     { "name": "MOPAC", "command": "mopac" },
     { "name": "NWChem", "command": "nwchem" },
     { "name": "Orca", "command": "orca" },
+    { "name": "PySCF", "command": "pyscf" },
     { "name": "Psi4", "command": "psi4" },
     { "name": "Q-Chem", "command": "qchem" },
     { "name": "TeraChem", "command": "terachem" }
