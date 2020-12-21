@@ -30,7 +30,7 @@ def getOptions():
     userOptions['Calculation Type']['type'] = "stringList"
     userOptions['Calculation Type']['default'] = 1
     userOptions['Calculation Type']['values'] = \
-        ['Single Point', 'Equilibrium Geometry', 'Frequencies']
+        ['Single Point', 'Equilibrium Geometry', 'Frequencies', 'Transition State']
 
     userOptions['Theory'] = {}
     userOptions['Theory']['type'] = "stringList"
@@ -149,6 +149,8 @@ def generateInputFile(opts):
         pass
     elif calculate == 'Frequencies':
         calcStr = 'FORCE'
+    elif calculate == 'Transition State':
+        calcStr = 'SADDLE'
     else:
         raise Exception('Unhandled calculation type: %s' % calculate)
 

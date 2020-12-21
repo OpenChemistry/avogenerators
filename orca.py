@@ -193,7 +193,8 @@ def generateInputFile(opts):
 
     if mos == True:
         output += '%output\n'
-        output += '   print[p_mos] true\n'
+        output += '   print[p_mos] 1\n'
+        output += '   print[p_basis] 2\n'
         output += 'end\n\n'
 
     output += '* xyz {} {}\n'.format(charge, multiplicity)
