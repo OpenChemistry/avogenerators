@@ -279,9 +279,11 @@ def generateInput():
     # Input file text -- will appear in the same order in the GUI as they are
     # listed in the array:
     files = []
-    files.append({'filename': '%s.inp' % baseName, 'contents': inp})
+    files.append({'filename': baseName + '.inp', 'contents': inp})
+    files.append({'filename': '.dump', 'contents': "random"})
     if debug:
         files.append({'filename': 'debug_info', 'contents': stdinStr})
+    # files.append({'filename': 'test', 'contents': "test"})
     result['files'] = files
     # Specify the main input file. This will be used by MoleQueue to determine
     # the value of the $$inputFileName$$ and $$inputFileBaseName$$ keywords.
