@@ -156,7 +156,6 @@ def generateInput():
     # listed in the array:
     files = []
     files.append({'filename': '%s.in' % baseName, 'contents': inp})
-    files.append({'filename': '.dump', 'contents': "random"})
     if debug:
         files.append({'filename': 'debug_info', 'contents': stdinStr})
     result['files'] = files
