@@ -4,6 +4,7 @@
   "url": "https://github.com/openchemistry/avogenerators",
   "name": "avogenerators",
   "description": "Scripts for generating input files for computational chemistry packages",
+  "type": "generators",
   "commands": [
     { "name": "Dalton", "command": "dalton" },
     { "name": "GAMESS-UK", "command": "gamessuk" },
