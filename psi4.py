@@ -25,12 +25,12 @@ def getOptions():
 
     userOptions['Processor Cores'] = {}
     userOptions['Processor Cores']['type'] = 'integer'
-    userOptions['Processor Cores']['default'] = 8
+    userOptions['Processor Cores']['default'] = 1
     userOptions['Processor Cores']['minimum'] = 1
 
     userOptions['Memory'] = {}
     userOptions['Memory']['type'] = 'integer'
-    userOptions['Memory']['default'] = 28
+    userOptions['Memory']['default'] = 16
     userOptions['Memory']['minimum'] = 1
 
     userOptions['Calculation Type'] = {}

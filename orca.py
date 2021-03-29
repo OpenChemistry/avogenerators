@@ -12,7 +12,7 @@ import sys
 
 # Some globals:
 targetName = 'ORCA'
-debug = False
+debug = True
 
 
 def getOptions():
@@ -25,12 +25,12 @@ def getOptions():
 
     userOptions['Processor Cores'] = {}
     userOptions['Processor Cores']['type'] = 'integer'
-    userOptions['Processor Cores']['default'] = 8
+    userOptions['Processor Cores']['default'] = 1
     userOptions['Processor Cores']['minimum'] = 1
 
     userOptions['Memory'] = {}
     userOptions['Memory']['type'] = 'integer'
-    userOptions['Memory']['default'] = 28
+    userOptions['Memory']['default'] = 16
     userOptions['Memory']['minimum'] = 1
 
     userOptions['Calculation Type'] = {}
@@ -49,15 +49,35 @@ def getOptions():
     userOptions['Theory']['default'] = 7
     userOptions['Theory']['toolTip'] = 'Hamiltonian or DFT method to use'
     userOptions['Theory']['values'] = \
-        ['HF', 'MP2', 'CCSD', 'BLYP', 'PBE', 'revPBE D3BJ', 'B3LYP', 'B97', 'B97-3C', 'M06L', 'M062X', 'wB97X-D3' ]
+        ['HF', 'MP2', 'CCSD', 'CCSD(T)', 'BLYP', 'PBE', 'PBE0', 'revPBE', 'B3LYP', 'B97-3C', 'M06L Grid6', 'M062X Grid6', 'wB97X-D3' ]
+
+    userOptions['RI Approximation'] = {}
+    userOptions['RI Approximation']['type'] = 'stringList'
+    userOptions['RI Approximation']['default'] = 0
+    userOptions['RI Approximation']['toolTip'] = 'DFT RI Approximation'
+    userOptions['RI Approximation']['values'] = \
+        ['None', 'NORI', 'RIJK', 'RIJONX', 'RIJCOSX']
+
+    userOptions['Dispersion Correction'] = {}
+    userOptions['Dispersion Correction']['type'] = 'stringList'
+    userOptions['Dispersion Correction']['default'] = 0
+    userOptions['Dispersion Correction']['toolTip'] = 'Any added dispersion corrections'
+    userOptions['Dispersion Correction']['values'] = \
+        ['None', 'D2', 'D3ZERO', 'D3BJ', 'D4' ]
+
 
     userOptions['Basis'] = {}
     userOptions['Basis']['type'] = 'stringList'
-    userOptions['Basis']['default'] = 3
+    userOptions['Basis']['default'] = 8
     userOptions['Basis']['toolTip'] = 'Gaussian basis set'
     userOptions['Basis']['values'] = \
-        ['6-31G(d)', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ', 'aug-cc-pVDZ', 'aug-cc-pVTZ', 'aug-cc-pVQZ', 'def2-SVP', 'def2-TZVP', 'def2-QZVP',
-         'ma-def2-SVP', 'ma-def2-TZVP', 'ma-def2-QZVP']
+        ['6-31G(d)',
+        'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ', 
+        'aug-cc-pVDZ', 'aug-cc-pVTZ', 'aug-cc-pVQZ', 
+        'def2-SVP', 'def2-TZVP', 'def2-QZVP',
+        'def2-TZVPP', 'def2-QZVPP',
+        'def2-TZVPPD', 'def2-QZVPPD',
+        'ma-def2-SVP', 'ma-def2-TZVP', 'ma-def2-QZVP']
 
     userOptions['Solvation'] = {}
     userOptions['Solvation']['type'] = 'stringList'
@@ -65,10 +85,8 @@ def getOptions():
     userOptions['Solvation']['toolTip'] = 'Solvent'
     userOptions['Solvation']['values'] = \
         ['None (gas)', 'Water', 'Acetonitrile', 'Acetone',
-        'Ethanol', 'Methanol',
-        'CH2Cl2', 'Chloroform',
-        'DMSO', 'DMF',
-        'Hexane', 'Toluene',
+        'Ethanol', 'Methanol', 'CH2Cl2', 'Chloroform',
+        'DMSO', 'DMF', 'Hexane', 'Toluene',
         'Pyridine', 'THF']
 
     userOptions['Solvation Type'] = {}
@@ -118,7 +136,7 @@ def getOptions():
 
     userOptions['AutoAux'] = {}
     userOptions['AutoAux']['type'] = 'boolean'
-    userOptions['AutoAux']['default'] = True
+    userOptions['AutoAux']['default'] = False
 
     opts = {'userOptions': userOptions}
 
@@ -139,6 +157,25 @@ def generateInputFile(opts):
     solvent = opts['Solvation']
     mos = opts['Print Molecular Orbitals']
     autoaux = opts['AutoAux']
+    disp = opts['Dispersion Correction']
+    ri = opts['RI Approximation']
+    auxbasis = 'None'
+
+    rijbasis = {'6-31G(d)':'AutoAux',
+    'cc-pVDZ':'Def2/J', 'cc-pVTZ':'Def2/J', 'cc-pVQZ':'Def2/J',
+    'aug-cc-pVDZ':'AutoAux', 'aug-cc-pVTZ':'AutoAux', 'aug-cc-pVQZ':'AutoAux',
+    'def2-SVP':'Def2/J', 'def2-TZVP':'Def2/J', 'def2-QZVP':'Def2/J',
+    'def2-TZVPP':'Def2/J', 'def2-QZVPP':'Def2/J',
+    'def2-TZVPPD':'AutoAux', 'def2-QZVPPD':'AutoAux',
+    'ma-def2-SVP':'AutoAux', 'ma-def2-TZVP':'AutoAux', 'ma-def2-QZVP':'AutoAux'}
+
+    rijkbasis = {'6-31G(d)':'AutoAux',
+    'cc-pVDZ':'cc-pVDZ/JK', 'cc-pVTZ':'cc-pVTZ/JK', 'cc-pVQZ':'cc-pVQZ/JK',
+    'aug-cc-pVDZ':'aug-cc-pVDZ/JK', 'aug-cc-pVTZ':'aug-cc-pVTZ/JK', 'aug-cc-pVQZ':'aug-cc-pVQZ/JK',
+    'def2-SVP':'Def2/JK', 'def2-TZVP':'Def2/JK', 'def2-QZVP':'Def2/JK',
+    'def2-TZVPP':'Def2/JK', 'def2-QZVPP':'Def2/JK',
+    'def2-TZVPPD':'aug-cc-pVTZ/JK', 'def2-QZVPPD':'aug-cc-pVQZ/JK',
+    'ma-def2-SVP':'aug-cc-pVDZ/JK', 'ma-def2-TZVP':'aug-cc-pVTZ/JK', 'ma-def2-QZVP':'aug-cc-pVQZ/JK'}
 
     # Convert to code-specific strings
     calcStr = ''
@@ -159,9 +196,29 @@ def generateInputFile(opts):
     elif not 'None' in opts['Solvation'] and solvtype == 'SMD':
         solvation = 'CPCM'
 
+    if disp == 'None':
+        disp = ''
+    else:
+        disp = ' ' + disp
+
+    if ri in ['None', 'NORI']:
+        autoaux = False
+        ri = ''
+    else:
+        if ri in ['RIJONX', 'RIJCOSX']:
+            auxbasis = rijbasis[basis]
+        else:
+            auxbasis = rijkbasis[basis]
+        ri = ' ' + ri
+    
+
     if autoaux == True:
-        if basis.startswith('def2') == False:
-            basis = basis + ' AutoAux'
+        auxbasis = 'AutoAux'
+
+    if auxbasis != 'None':
+        basis = basis + ' ' + auxbasis
+
+    theory = theory + disp + ri
 
     # put the pieces together
     code = '{} {} {} {}'.format(calcStr, theory, basis, solvation)

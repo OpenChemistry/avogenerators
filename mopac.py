@@ -23,7 +23,7 @@ def getOptions():
 
     userOptions['Processor Cores'] = {}
     userOptions['Processor Cores']['type'] = 'integer'
-    userOptions['Processor Cores']['default'] = 8
+    userOptions['Processor Cores']['default'] = 1
     userOptions['Processor Cores']['minimum'] = 1
 
     userOptions['Calculation Type'] = {}
