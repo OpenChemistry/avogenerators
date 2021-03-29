@@ -33,22 +33,38 @@ def getOptions():
     userOptions['Theory']['type'] = "stringList"
     userOptions['Theory']['default'] = 3
     userOptions['Theory']['values'] = \
-        ['AM1', 'PM3', 'RHF', 'B3LYP', 'MP2', 'CCSD']
+        ['AM1', 'PM3', 'RHF', 'B3LYP', 'WB97XD', 'MP2', 'CCSD']
 
     userOptions['Basis'] = {}
     userOptions['Basis']['type'] = "stringList"
     userOptions['Basis']['default'] = 2
     userOptions['Basis']['values'] = \
-        ['STO-3G', '3-21 G', '6-31 G(d)', '6-31 G(d,p)', 'LANL2DZ']
+        ['STO-3G', '3-21 G', '6-31 G(d)', '6-31 G(d,p)', 'LANL2DZ', 'cc-pVDZ', 'cc-pVTZ',
+        'cc-pVQZ', 'cc-pV5Z', 'cc-pV6Z', 'aug-cc-pVDZ', 'aug-cc-pVTZ', 'aug-cc-pVQZ',
+        'aug-cc-pV5Z', 'aug-cc-pV6Z', 'Def2SV', 'Def2TZV', 'Def2QZV', 'Def2SVP', 'Def2TZVP',
+        'Def2QZVP', 'Def2SVPP', 'Def2TZVPP', 'Def2QZVPP']
 
+    userOptions['Alternate Basis Set'] = {}
+    userOptions['Alternate Basis Set']['type'] = "boolean"
+    userOptions['Alternate Basis Set']['default'] = False
+
+    userOptions['Alternate Basis Set Name'] = {}
+    userOptions['Alternate Basis Set Name']['type'] = 'string'
+    userOptions['Alternate Basis Set Name']['default'] = ''
+    
     userOptions['Filename Base'] = {}
     userOptions['Filename Base']['type'] = 'string'
     userOptions['Filename Base']['default'] = 'job'
 
     userOptions['Processor Cores'] = {}
     userOptions['Processor Cores']['type'] = 'integer'
-    userOptions['Processor Cores']['default'] = 1
+    userOptions['Processor Cores']['default'] = 8
     userOptions['Processor Cores']['minimum'] = 1
+
+    userOptions['Memory'] = {}
+    userOptions['Memory']['type'] = 'integer'
+    userOptions['Memory']['default'] = 28
+    userOptions['Memory']['minimum'] = 1
 
     userOptions['Multiplicity'] = {}
     userOptions['Multiplicity']['type'] = "integer"
@@ -83,7 +99,10 @@ def generateInputFile(opts):
     title = opts['Title']
     calculate = opts['Calculation Type']
     theory = opts['Theory']
-    basis = opts['Basis']
+    if opts['Alternate Basis Set'] == True:
+        basis = opts['Alternate Basis Set Name']
+    else:
+        basis = opts['Basis']
     multiplicity = opts['Multiplicity']
     charge = opts['Charge']
     outputFormat = opts['Output Format']
@@ -94,7 +113,8 @@ def generateInputFile(opts):
 
     # Number of cores
     if nCores > 1:
-        output += "%%NProcShared=%d\n" % nCores
+        output += "%NProcShared=" + str(nCores) + "\n"
+    output += "%mem=" + str(opts['Memory']) + "GB\n"
 
     # Checkpoint
     if checkpoint:
@@ -102,10 +122,10 @@ def generateInputFile(opts):
 
     # Theory/Basis
     if theory == 'AM1' or theory == 'PM3':
-        output += '#n %s' % (theory)
+        output += '#p %s' % (theory)
         warnings.append('Ignoring basis set for semi-empirical calculation.')
     else:
-        output += '#n %s/%s' % (theory, basis.replace(' ', ''))
+        output += '#p %s/%s' % (theory, basis.replace(' ', ''))
 
     # Calculation type
     if calculate == 'Single Point':
@@ -162,13 +182,13 @@ def generateInput():
     # Input file text -- will appear in the same order in the GUI as they are
     # listed in the array:
     files = []
-    files.append({'filename': '%s.com' % baseName, 'contents': inp})
+    files.append({'filename': '%s.gjf' % baseName, 'contents': inp})
     if debug:
         files.append({'filename': 'debug_info', 'contents': stdinStr})
     result['files'] = files
     # Specify the main input file. This will be used by MoleQueue to determine
     # the value of the $$inputFileName$$ and $$inputFileBaseName$$ keywords.
-    result['mainFile'] = '%s.com' % baseName
+    result['mainFile'] = '%s.gjf' % baseName
 
     if len(warnings) > 0:
         result['warnings'] = warnings

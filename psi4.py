@@ -12,8 +12,8 @@ import sys
 
 # Some globals:
 targetName = 'Psi'
-debug = False
 
+debug = False
 
 def getOptions():
     userOptions = {}
@@ -22,6 +22,16 @@ def getOptions():
     userOptions['Title']['type'] = 'string'
     userOptions['Title']['default'] = ''
     userOptions['Title']['toolTip'] = 'Title of the input file'
+
+    userOptions['Processor Cores'] = {}
+    userOptions['Processor Cores']['type'] = 'integer'
+    userOptions['Processor Cores']['default'] = 1
+    userOptions['Processor Cores']['minimum'] = 1
+
+    userOptions['Memory'] = {}
+    userOptions['Memory']['type'] = 'integer'
+    userOptions['Memory']['default'] = 16
+    userOptions['Memory']['minimum'] = 1
 
     userOptions['Calculation Type'] = {}
     userOptions['Calculation Type']['type'] = 'stringList'
@@ -35,16 +45,28 @@ def getOptions():
     userOptions['Theory']['default'] = 7
     userOptions['Theory']['toolTip'] = 'Hamiltonian or DFT method to use'
     userOptions['Theory']['values'] = \
-        ['HF', 'MP2', 'CCSD', 'CCSD(T)', 'B3LYP-D', 'B97-D', 'wB97X-D',
-        'SAPT0', 'SAPT2' ]
+        ['HF', 'MP2', 'CCSD', 'CCSD(T)', 'B3LYP-D', 'B97-D', 'B97-D3BJ', 'REVPBE', 'REVPBE-D3BJ', 'wB97X-D', 'M06-2X', 'MO6-L',
+        'SAPT0', 'SAPT2', 'SAPT2-ct', 'SAPT2+', 'SAPT2+-ct', 'SAPT2+(3)', 'SAPT2+(3)-ct',
+        'SAPT2+3', 'SAPT2+3-ct']
+
 
     userOptions['Basis'] = {}
     userOptions['Basis']['type'] = 'stringList'
-    userOptions['Basis']['default'] = 3
+    userOptions['Basis']['default'] = 11
     userOptions['Basis']['toolTip'] = 'Gaussian basis set'
     userOptions['Basis']['values'] = \
-        ['6-31G(d)', 'cc-pVDZ', 'aug-cc-pVTZ', 'def2-SVP', 'ma-def2-SVP',
-        'def2-SVPD', 'def2-TZVP', 'def2-QZVP', 'pc-2', 'aug-pc-2']
+        ['6-31G(d)', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ', 'cc-pV5Z',
+        'cc-pV6Z', 'aug-cc-pVDZ', 'aug-cc-pVTZ', 'aug-cc-pVQZ',
+        'aug-cc-pV5Z', 'aug-cc-pV6Z', 'def2-SVP', 'def2-SVPD',
+        'def2-TZVP', 'def2-QZVP', 'pc-2', 'aug-pc-2']
+
+    userOptions['Alternate Basis Set'] = {}
+    userOptions['Alternate Basis Set']['type'] = "boolean"
+    userOptions['Alternate Basis Set']['default'] = False
+
+    userOptions['Alternate Basis Set Name'] = {}
+    userOptions['Alternate Basis Set Name']['type'] = 'string'
+    userOptions['Alternate Basis Set Name']['default'] = ''
 
     userOptions['Filename Base'] = {}
     userOptions['Filename Base']['type'] = 'string'
@@ -74,10 +96,16 @@ def generateInputFile(opts):
     title = opts['Title']
     calculate = opts['Calculation Type']
     theory = opts['Theory']
-    basis = opts['Basis']
+
+    if opts['Alternate Basis Set'] == True:
+        basis = opts['Alternate Basis Set Name']
+    else:
+        basis = opts['Basis']
     charge = opts['Charge']
     multiplicity = opts['Multiplicity']
-
+    nCores = int(opts['Processor Cores'])
+    memory = int(opts['Memory'])
+    
     # Convert to code-specific strings
     calcStr = ''
     if calculate == 'Single Point':
@@ -90,14 +118,22 @@ def generateInputFile(opts):
         raise Exception('Unhandled calculation type: %s' % calculate)
 
     output = ''
+
+    output += "set_num_threads(" + str(nCores) + ")\n"
+    output += "memory " + str(memory) + "GB\n"
     output += 'set basis {}\n'.format(basis)
     output += 'molecule {\n'
-    output += '* xyz {} {}\n'.format(charge, multiplicity)
+    output += '{} {}\n'.format(charge, multiplicity)
     output += '$$coords:___Sxyz$$\n'
-    output += '}\n'
+    output += '}\n\n'
+    if calcStr == 'optimize':
+        output += 'set optking {\n'
+        output += '   print_trajectory_xyz_file\tTrue\n'
+        output += '}\n\n'
     if 'SAPT' in theory:
         output += 'auto_fragments(\'\')\n'
-    output += '{}({})\n'.format(calcStr, theory)
+
+    output += '{}(\"{}\")\n'.format(calcStr, theory)
 
     return output
 
