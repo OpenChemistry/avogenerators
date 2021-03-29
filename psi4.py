@@ -11,9 +11,9 @@ import json
 import sys
 
 # Some globals:
-targetName = 'Psi4'
-debug = False
+targetName = 'Psi'
 
+debug = False
 
 def getOptions():
     userOptions = {}
@@ -49,15 +49,16 @@ def getOptions():
         'SAPT0', 'SAPT2', 'SAPT2-ct', 'SAPT2+', 'SAPT2+-ct', 'SAPT2+(3)', 'SAPT2+(3)-ct',
         'SAPT2+3', 'SAPT2+3-ct']
 
+
     userOptions['Basis'] = {}
     userOptions['Basis']['type'] = 'stringList'
-    userOptions['Basis']['default'] = 3
+    userOptions['Basis']['default'] = 11
     userOptions['Basis']['toolTip'] = 'Gaussian basis set'
     userOptions['Basis']['values'] = \
         ['6-31G(d)', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ', 'cc-pV5Z',
         'cc-pV6Z', 'aug-cc-pVDZ', 'aug-cc-pVTZ', 'aug-cc-pVQZ',
         'aug-cc-pV5Z', 'aug-cc-pV6Z', 'def2-SVP', 'def2-SVPD',
-        'def2-TZVP', 'def2-QZVP']
+        'def2-TZVP', 'def2-QZVP', 'pc-2', 'aug-pc-2']
 
     userOptions['Alternate Basis Set'] = {}
     userOptions['Alternate Basis Set']['type'] = "boolean"
@@ -95,6 +96,7 @@ def generateInputFile(opts):
     title = opts['Title']
     calculate = opts['Calculation Type']
     theory = opts['Theory']
+
     if opts['Alternate Basis Set'] == True:
         basis = opts['Alternate Basis Set Name']
     else:
@@ -104,7 +106,6 @@ def generateInputFile(opts):
     nCores = int(opts['Processor Cores'])
     memory = int(opts['Memory'])
     
-
     # Convert to code-specific strings
     calcStr = ''
     if calculate == 'Single Point':
@@ -117,6 +118,7 @@ def generateInputFile(opts):
         raise Exception('Unhandled calculation type: %s' % calculate)
 
     output = ''
+
     output += "set_num_threads(" + str(nCores) + ")\n"
     output += "memory " + str(memory) + "GB\n"
     output += 'set basis {}\n'.format(basis)
@@ -130,7 +132,6 @@ def generateInputFile(opts):
         output += '}\n\n'
     if 'SAPT' in theory:
         output += 'auto_fragments(\'\')\n'
-
 
     output += '{}(\"{}\")\n'.format(calcStr, theory)
 
