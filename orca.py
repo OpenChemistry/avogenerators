@@ -12,7 +12,7 @@ import sys
 
 # Some globals:
 targetName = 'ORCA'
-debug = True
+debug = False
 
 
 def getOptions():
