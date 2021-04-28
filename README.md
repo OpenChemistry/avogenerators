@@ -42,7 +42,7 @@ bug reports, and general discussion.
 
 Made with [contributors-img](https://contrib.rocks).
 
-  [Avogadro2Logo]: http://openchemistry.org/files/logos/avogadro2.png "Avogadro2"
+  [Avogadro2Logo]: https://raw.githubusercontent.com/OpenChemistry/avogadrolibs/master/docs/avogadro2_64.png "Avogadro2"
   [OpenChemistry]: http://openchemistry.org/ "Open Chemistry Project"
   [OpenChemistryLogo]: http://openchemistry.org/files/logos/openchem128.png "Open Chemistry"
   [Kitware]: http://kitware.com/ "Kitware, Inc."
