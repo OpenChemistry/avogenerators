@@ -1,23 +1,19 @@
-Avogadro 2 Python Input Generators
+![Avogadro 2][Avogadro2Logo] Avogadro 2 Input Generators
 ==========
-![Avogadro 2][Avogadro2Logo]
+[![Latest Release](https://img.shields.io/github/v/release/openchemistry/avogadrolibs)](https://github.com/OpenChemistry/avogadrolibs/releases) [![BSD License](https://img.shields.io/github/license/openchemistry/avogadrolibs)](https://github.com/OpenChemistry/avogadrolibs/blob/master/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![GitHub contributors](https://img.shields.io/github/contributors/openchemistry/avogenerators.svg?style=flat)]()  [![OpenCollective Backers](https://img.shields.io/opencollective/all/open-chemistry)](https://opencollective.com/open-chemistry)
 
 Introduction
 ------------
 
 Avogadro is an advanced molecular editor designed for cross-platform use in
 computational chemistry, molecular modeling, bioinformatics, materials science,
-and related areas. This repository contains the Python input generators that
+and related areas. 
+
+This repository contains the Python input generators that
 can be run on the command line by the Avogadro 2 application to generate input
 for various codes, such as NWChem, Gaussian, MOPAC, and others.
 
-
-![Open Chemistry project][OpenChemistryLogo]
-![Kitware, Inc.][KitwareLogo]
-
-Avogadro 2 is being developed as part of the [Open Chemistry][OpenChemistry]
-project at [Kitware][Kitware], along with companion tools and libraries to
-support the work.
+Pull requests, bug reports, and feature suggestions are most welcome.
 
 Installing
 ----------
@@ -35,9 +31,16 @@ input generators. We encourage you to discuss any new generators on our
 development list.
 
 Our [wiki][Wiki] is used to document features, flesh out designs and host other
-documentation. Our API is [documented using Doxygen][Doxygen] with updated
-documentation generated nightly. We have several [mailing lists][MailingLists]
-to coordinate development and to provide support.
+documentation.
+
+Please use the [Avogadro discussion forum](https://discuss.avogadro.cc/) for suggestions,
+bug reports, and general discussion.
+
+<a href="https://github.com/openchemistry/avogenerators/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=openchemistry/avogenerators" />
+</a>
+
+Made with [contributors-img](https://contrib.rocks).
 
   [Avogadro2Logo]: http://openchemistry.org/files/logos/avogadro2.png "Avogadro2"
   [OpenChemistry]: http://openchemistry.org/ "Open Chemistry Project"
