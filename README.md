@@ -1,5 +1,4 @@
 # Avogadro 2 Input Generators
-==========
 
 Introduction
 ------------
