@@ -39,7 +39,7 @@ def getOptions():
     userOptions['Basis']['type'] = "stringList"
     userOptions['Basis']['default'] = 2
     userOptions['Basis']['values'] = \
-        ['STO-3G', '3-21 G', '6-31 G(d)', '6-31 G(d,p)', 'LANL2DZ', 'cc-pVDZ', 'cc-pVTZ',
+        ['STO-3G', '3-21G', '6-31G(d)', '6-31G(d,p)', 'LANL2DZ', 'cc-pVDZ', 'cc-pVTZ',
         'cc-pVQZ', 'cc-pV5Z', 'cc-pV6Z', 'aug-cc-pVDZ', 'aug-cc-pVTZ', 'aug-cc-pVQZ',
         'aug-cc-pV5Z', 'aug-cc-pV6Z', 'Def2SV', 'Def2TZV', 'Def2QZV', 'Def2SVP', 'Def2TZVP',
         'Def2QZVP', 'Def2SVPP', 'Def2TZVPP', 'Def2QZVPP']
@@ -47,7 +47,7 @@ def getOptions():
     userOptions['Alternate Basis Set'] = {}
     userOptions['Alternate Basis Set']['type'] = "boolean"
     userOptions['Alternate Basis Set']['default'] = False
-
+    
     userOptions['Alternate Basis Set Name'] = {}
     userOptions['Alternate Basis Set Name']['type'] = 'string'
     userOptions['Alternate Basis Set Name']['default'] = ''
@@ -113,8 +113,8 @@ def generateInputFile(opts):
 
     # Number of cores
     if nCores > 1:
-        output += "%NProcShared=" + str(nCores) + "\n"
-    output += "%mem=" + str(opts['Memory']) + "GB\n"
+        output += f"%NProcShared={nCores}\n"
+    output += f"%mem={opts['Memory']}GB\n"
 
     # Checkpoint
     if checkpoint:
@@ -122,10 +122,10 @@ def generateInputFile(opts):
 
     # Theory/Basis
     if theory == 'AM1' or theory == 'PM3':
-        output += '#p %s' % (theory)
+        output += f'#p {theory}'
         warnings.append('Ignoring basis set for semi-empirical calculation.')
     else:
-        output += '#p %s/%s' % (theory, basis.replace(' ', ''))
+        output += f"#p {theory}/{basis.replace(' ', '')}" 
 
     # Calculation type
     if calculate == 'Single Point':
@@ -135,7 +135,7 @@ def generateInputFile(opts):
     elif calculate == 'Frequencies':
         output += ' Opt Freq'
     else:
-        raise Exception('Invalid calculation type: %s' % calculate)
+        raise Exception(f'Invalid calculation type: {calculate}')
 
     # Output format
     if outputFormat == 'Standard':
@@ -145,13 +145,13 @@ def generateInputFile(opts):
     elif outputFormat == 'Molekel':
         output += ' gfoldprint pop=full'
     else:
-        raise Exception('Invalid output format: %s' % outputFormat)
+        raise Exception(f'Invalid output format: {outputFormat}')
 
     # Title
-    output += '\n\n %s\n\n' % title
+    output += f'\n\n {title}\n\n'
 
     # Charge/Multiplicity
-    output += "%d %d\n" % (charge, multiplicity)
+    output += f"{charge} {multiplicity}\n"
 
     # Coordinates
     output += '$$coords:Sxyz$$\n'
@@ -182,13 +182,13 @@ def generateInput():
     # Input file text -- will appear in the same order in the GUI as they are
     # listed in the array:
     files = []
-    files.append({'filename': '%s.gjf' % baseName, 'contents': inp})
+    files.append({'filename': f'{baseName}.gjf', 'contents': inp})
     if debug:
         files.append({'filename': 'debug_info', 'contents': stdinStr})
     result['files'] = files
     # Specify the main input file. This will be used by MoleQueue to determine
     # the value of the $$inputFileName$$ and $$inputFileBaseName$$ keywords.
-    result['mainFile'] = '%s.gjf' % baseName
+    result['mainFile'] = f'{baseName}.gjf'
 
     if len(warnings) > 0:
         result['warnings'] = warnings
