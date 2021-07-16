@@ -15,34 +15,35 @@ import sys
 debug = False
 warnings = []
 
+option_types={"Title":"string", "Calculation Type":"stringList", "Theory":"stringList",
+              "Basis":"stringList", "Filename Base":"string", "Processor Cores":"integer",
+              "Memory":"integer", "Multiplicity":"integer", "Charge":"integer",
+              "Output Format":"stringList"}
+
+calc_type={"Single Point": " SP",
+           "Equilibrium Geometry": " Opt",
+           "Frequencies": " Opt Freq"}
+
+theories=['AM1', 'PM3', 'RHF', 'B3LYP', 'WB97XD', 'MP2', 'CCSD']
+
+bases=['STO-3G', '3-21G', '6-31G(d)', '6-31G(d,p)', 'LANL2DZ', 'cc-pVDZ', 'cc-pVTZ',
+       'cc-pVQZ', 'cc-pV5Z', 'cc-pV6Z', 'aug-cc-pVDZ', 'aug-cc-pVTZ', 'aug-cc-pVQZ',
+       'aug-cc-pV5Z', 'aug-cc-pV6Z', 'Def2SV', 'Def2TZV', 'Def2QZV', 'Def2SVP', 'Def2TZVP',
+       'Def2QZVP', 'Def2SVPP', 'Def2TZVPP', 'Def2QZVPP']
 
 def getOptions():
-    userOptions = {}
+    userOptions = {option:{"type":t} for option,t in option_types.items()}
 
-    userOptions['Title'] = {}
-    userOptions['Title']['type'] = 'string'
     userOptions['Title']['default'] = ''
 
-    userOptions['Calculation Type'] = {}
-    userOptions['Calculation Type']['type'] = "stringList"
     userOptions['Calculation Type']['default'] = 1
-    userOptions['Calculation Type']['values'] = \
-        ['Single Point', 'Equilibrium Geometry', 'Frequencies']
+    userOptions['Calculation Type']['values'] = [c for c in calc_type]
 
-    userOptions['Theory'] = {}
-    userOptions['Theory']['type'] = "stringList"
     userOptions['Theory']['default'] = 3
-    userOptions['Theory']['values'] = \
-        ['AM1', 'PM3', 'RHF', 'B3LYP', 'WB97XD', 'MP2', 'CCSD']
+    userOptions['Theory']['values'] = theories
 
-    userOptions['Basis'] = {}
-    userOptions['Basis']['type'] = "stringList"
     userOptions['Basis']['default'] = 2
-    userOptions['Basis']['values'] = \
-        ['STO-3G', '3-21G', '6-31G(d)', '6-31G(d,p)', 'LANL2DZ', 'cc-pVDZ', 'cc-pVTZ',
-        'cc-pVQZ', 'cc-pV5Z', 'cc-pV6Z', 'aug-cc-pVDZ', 'aug-cc-pVTZ', 'aug-cc-pVQZ',
-        'aug-cc-pV5Z', 'aug-cc-pV6Z', 'Def2SV', 'Def2TZV', 'Def2QZV', 'Def2SVP', 'Def2TZVP',
-        'Def2QZVP', 'Def2SVPP', 'Def2TZVPP', 'Def2QZVPP']
+    userOptions['Basis']['values'] = bases
 
     userOptions['Alternate Basis Set'] = {}
     userOptions['Alternate Basis Set']['type'] = "boolean"
@@ -51,35 +52,23 @@ def getOptions():
     userOptions['Alternate Basis Set Name'] = {}
     userOptions['Alternate Basis Set Name']['type'] = 'string'
     userOptions['Alternate Basis Set Name']['default'] = ''
-    
-    userOptions['Filename Base'] = {}
-    userOptions['Filename Base']['type'] = 'string'
+
     userOptions['Filename Base']['default'] = 'job'
 
-    userOptions['Processor Cores'] = {}
-    userOptions['Processor Cores']['type'] = 'integer'
     userOptions['Processor Cores']['default'] = 8
     userOptions['Processor Cores']['minimum'] = 1
 
-    userOptions['Memory'] = {}
-    userOptions['Memory']['type'] = 'integer'
     userOptions['Memory']['default'] = 28
     userOptions['Memory']['minimum'] = 1
 
-    userOptions['Multiplicity'] = {}
-    userOptions['Multiplicity']['type'] = "integer"
     userOptions['Multiplicity']['default'] = 1
     userOptions['Multiplicity']['minimum'] = 1
     userOptions['Multiplicity']['maximum'] = 5
 
-    userOptions['Charge'] = {}
-    userOptions['Charge']['type'] = "integer"
     userOptions['Charge']['default'] = 0
     userOptions['Charge']['minimum'] = -9
     userOptions['Charge']['maximum'] = 9
 
-    userOptions['Output Format'] = {}
-    userOptions['Output Format']['type'] = "stringList"
     userOptions['Output Format']['default'] = 0
     userOptions['Output Format']['values'] = ['Standard', 'Molden', 'Molekel']
 
@@ -99,7 +88,7 @@ def generateInputFile(opts):
     title = opts['Title']
     calculate = opts['Calculation Type']
     theory = opts['Theory']
-    if opts['Alternate Basis Set'] == True:
+    if opts['Alternate Basis Set']:
         basis = opts['Alternate Basis Set Name']
     else:
         basis = opts['Basis']
@@ -107,34 +96,30 @@ def generateInputFile(opts):
     charge = opts['Charge']
     outputFormat = opts['Output Format']
     checkpoint = opts['Write Checkpoint File']
-    nCores = int(opts['Processor Cores'])
+    nCores = opts['Processor Cores']
 
     output = ''
 
     # Number of cores
-    if nCores > 1:
-        output += f"%NProcShared={nCores}\n"
+    output += f"%NProcShared={nCores}\n"
     output += f"%mem={opts['Memory']}GB\n"
 
     # Checkpoint
     if checkpoint:
-        output += '%Chk=checkpoint.chk\n'
+        baseName=opts["Filename Base"]
+        output += f'%Chk={baseName}.chk\n'
 
     # Theory/Basis
-    if theory == 'AM1' or theory == 'PM3':
+    if theory in ('AM1','PM3'):
         output += f'#p {theory}'
         warnings.append('Ignoring basis set for semi-empirical calculation.')
     else:
         output += f"#p {theory}/{basis.replace(' ', '')}" 
 
     # Calculation type
-    if calculate == 'Single Point':
-        output += ' SP'
-    elif calculate == 'Equilibrium Geometry':
-        output += ' Opt'
-    elif calculate == 'Frequencies':
-        output += ' Opt Freq'
-    else:
+    try:
+        output += calc_type[calculate]
+    except KeyError:
         raise Exception(f'Invalid calculation type: {calculate}')
 
     # Output format
@@ -178,17 +163,15 @@ def generateInput():
     baseName = opts['options']['Filename Base']
 
     # Prepare the result
-    result = {}
+    # Specify the main input file. This will be used by MoleQueue to determine
+    # the value of the $$inputFileName$$ and $$inputFileBaseName$$ keywords.
+    result = {"mainFile": f'{baseName}.gjf'}
     # Input file text -- will appear in the same order in the GUI as they are
     # listed in the array:
-    files = []
-    files.append({'filename': f'{baseName}.gjf', 'contents': inp})
+    files = [{'filename': f'{baseName}.gjf', 'contents': inp}]
     if debug:
         files.append({'filename': 'debug_info', 'contents': stdinStr})
     result['files'] = files
-    # Specify the main input file. This will be used by MoleQueue to determine
-    # the value of the $$inputFileName$$ and $$inputFileBaseName$$ keywords.
-    result['mainFile'] = f'{baseName}.gjf'
 
     if len(warnings) > 0:
         result['warnings'] = warnings
