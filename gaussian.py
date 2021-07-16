@@ -34,6 +34,7 @@ bases=['STO-3G', '3-21G', '6-31G(d)', '6-31G(d,p)', 'LANL2DZ', 'cc-pVDZ', 'cc-pV
 def getOptions():
     userOptions = {option:{"type":t} for option,t in option_types.items()}
 
+    userOptions["tabName"]="Standard"
     userOptions['Title']['default'] = ''
 
     userOptions['Calculation Type']['default'] = 1
@@ -46,6 +47,7 @@ def getOptions():
     userOptions['Basis']['values'] = bases
 
     altOptions={f"Alternate {k}":{} for k in ("Theory", "Basis Set")}
+    altOptions["tabName"]="Alternate"
     altOptions['Alternate Theory']['type'] = 'string'
     altOptions['Alternate Theory']['default'] = ''
 
