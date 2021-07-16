@@ -36,7 +36,7 @@ Please use the [Avogadro discussion forum](https://discuss.avogadro.cc/) for sug
 bug reports, and general discussion.
 
 <a href="https://github.com/openchemistry/avogenerators/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=openchemistry/avogenerators" />
+  <img src="https://contrib.rocks/image?repo=openchemistry/avogenerators"  alt=""/>
 </a>
 
 Made with [contributors-img](https://contrib.rocks).

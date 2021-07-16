@@ -45,13 +45,12 @@ def getOptions():
     userOptions['Basis']['default'] = 2
     userOptions['Basis']['values'] = bases
 
-    userOptions['Alternate Basis Set'] = {}
-    userOptions['Alternate Basis Set']['type'] = "boolean"
-    userOptions['Alternate Basis Set']['default'] = False
-    
-    userOptions['Alternate Basis Set Name'] = {}
-    userOptions['Alternate Basis Set Name']['type'] = 'string'
-    userOptions['Alternate Basis Set Name']['default'] = ''
+    altOptions={f"Alternate {k}":{} for k in ("Theory", "Basis Set")}
+    altOptions['Alternate Theory']['type'] = 'string'
+    altOptions['Alternate Theory']['default'] = ''
+
+    altOptions['Alternate Basis Set']['type'] = 'string'
+    altOptions['Alternate Basis Set']['default'] = ''
 
     userOptions['Filename Base']['default'] = 'job'
 
@@ -77,7 +76,7 @@ def getOptions():
     userOptions['Write Checkpoint File']['default'] = True
 
     # TODO Coordinate format (need zmatrix)
-
+    userOptions=[userOptions,altOptions]
     opts = {'userOptions': userOptions}
 
     return opts
@@ -88,10 +87,11 @@ def generateInputFile(opts):
     title = opts['Title']
     calculate = opts['Calculation Type']
     theory = opts['Theory']
+    if opts["Alternate Theory"]:
+        theory = opts["Alternate Theory"]
+    basis = opts['Basis']
     if opts['Alternate Basis Set']:
-        basis = opts['Alternate Basis Set Name']
-    else:
-        basis = opts['Basis']
+        basis = opts['Alternate Basis Set']
     multiplicity = opts['Multiplicity']
     charge = opts['Charge']
     outputFormat = opts['Output Format']
