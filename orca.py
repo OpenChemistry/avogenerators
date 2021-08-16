@@ -16,7 +16,9 @@ debug = False
 
 
 def getOptions():
-    userOptions = {}
+    userOptions = {
+        'tabName': 'Basic'
+    }
 
     userOptions['Title'] = {}
     userOptions['Title']['type'] = 'string'
@@ -38,7 +40,8 @@ def getOptions():
     userOptions['Calculation Type']['default'] = 1
     userOptions['Calculation Type']['toolTip'] = 'Type of calculation to perform'
     userOptions['Calculation Type']['values'] = \
-        ['Single Point', 'Geometry Optimization', 'Frequencies', 'AIMD']
+        ['Single Point', 'Geometry Optimization', 'Frequencies',
+         'Transition State', 'Dynamics']
 
     userOptions['Print Molecular Orbitals'] = {}
     userOptions['Print Molecular Orbitals']['type'] = 'boolean'
@@ -49,7 +52,8 @@ def getOptions():
     userOptions['Theory']['default'] = 7
     userOptions['Theory']['toolTip'] = 'Hamiltonian or DFT method to use'
     userOptions['Theory']['values'] = \
-        ['HF', 'MP2', 'CCSD', 'CCSD(T)', 'BLYP', 'PBE', 'PBE0', 'revPBE', 'B3LYP', 'B97-3C', 'M06L Grid6', 'M062X Grid6', 'wB97X-D3' ]
+        ['HF', 'MP2', 'CCSD', 'CCSD(T)', 'BLYP', 'PBE', 'PBE0', 'revPBE',
+         'B3LYP', 'B97-3C', 'M06L Grid6', 'M062X Grid6', 'wB97X-D3']
 
     userOptions['RI Approximation'] = {}
     userOptions['RI Approximation']['type'] = 'stringList'
@@ -63,8 +67,8 @@ def getOptions():
     userOptions['Dispersion Correction']['default'] = 0
     userOptions['Dispersion Correction']['toolTip'] = 'Any added dispersion corrections'
     userOptions['Dispersion Correction']['values'] = \
-        ['None', 'D2', 'D3ZERO', 'D3BJ', 'D4' ]
-
+        ['None', 'D3ZERO', 'D3BJ', 'D4']
+    userOptions['Dispersion Correction']['hide'] = True
 
     userOptions['Basis'] = {}
     userOptions['Basis']['type'] = 'stringList'
@@ -72,22 +76,22 @@ def getOptions():
     userOptions['Basis']['toolTip'] = 'Gaussian basis set'
     userOptions['Basis']['values'] = \
         ['6-31G(d)',
-        'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ', 
-        'aug-cc-pVDZ', 'aug-cc-pVTZ', 'aug-cc-pVQZ', 
-        'def2-SVP', 'def2-TZVP', 'def2-QZVP',
-        'def2-TZVPP', 'def2-QZVPP',
-        'def2-TZVPPD', 'def2-QZVPPD',
-        'ma-def2-SVP', 'ma-def2-TZVP', 'ma-def2-QZVP']
+         'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ',
+         'aug-cc-pVDZ', 'aug-cc-pVTZ', 'aug-cc-pVQZ',
+         'def2-SVP', 'def2-TZVP', 'def2-QZVP',
+         'def2-TZVPP', 'def2-QZVPP',
+         'def2-TZVPPD', 'def2-QZVPPD',
+         'ma-def2-SVP', 'ma-def2-TZVP', 'ma-def2-QZVP']
 
     userOptions['Solvation'] = {}
     userOptions['Solvation']['type'] = 'stringList'
     userOptions['Solvation']['default'] = 0
     userOptions['Solvation']['toolTip'] = 'Solvent'
     userOptions['Solvation']['values'] = \
-        ['None (gas)', 'Water', 'Acetonitrile', 'Acetone',
-        'Ethanol', 'Methanol', 'CH2Cl2', 'Chloroform',
-        'DMSO', 'DMF', 'Hexane', 'Toluene',
-        'Pyridine', 'THF']
+        ['None (gas)', '-', 'Water', 'Acetonitrile', 'Acetone',
+         'Ethanol', 'Methanol', 'CCl4', 'CH2Cl2', 'Chloroform',
+         'DMSO', 'DMF', 'Hexane', 'Toluene',
+         'Pyridine', 'THF', 'Toluene']
 
     userOptions['Solvation Type'] = {}
     userOptions['Solvation Type']['type'] = 'stringList'
@@ -113,32 +117,37 @@ def getOptions():
     userOptions['Multiplicity']['minimum'] = 1
     userOptions['Multiplicity']['maximum'] = 6
 
-    userOptions['AIMD TimeStep'] = {}
-    userOptions['AIMD TimeStep']['type'] = 'string'
-    userOptions['AIMD TimeStep']['default'] = '0.5_fs'
-
-
-    userOptions['AIMD Initvel'] = {}
-    userOptions['AIMD Initvel']['type'] = 'string'
-    userOptions['AIMD Initvel']['default'] = '350'
-
-    userOptions['AIMD Thermostat Temp'] = {}
-    userOptions['AIMD Thermostat Temp']['type'] = 'string'
-    userOptions['AIMD Thermostat Temp']['default'] = '350'
-
-    userOptions['AIMD Thermostat Time'] = {}
-    userOptions['AIMD Thermostat Time']['type'] = 'string'
-    userOptions['AIMD Thermostat Time']['default'] = '10_fs'
-
-    userOptions['AIMD RunTime'] = {}
-    userOptions['AIMD RunTime']['type'] = 'string'
-    userOptions['AIMD RunTime']['default'] = '200'
-
     userOptions['AutoAux'] = {}
     userOptions['AutoAux']['type'] = 'boolean'
     userOptions['AutoAux']['default'] = False
 
-    opts = {'userOptions': userOptions}
+    aimdOptions = {
+        'tabName': 'Dynamics'
+    }
+    aimdOptions['AIMD TimeStep'] = {
+        'type': 'string',
+        'default': '0.5_fs',
+    }
+    aimdOptions['AIMD Initvel'] = {
+        'type': 'string',
+        'default': '350',
+    }
+    aimdOptions['AIMD Thermostat Temp'] = {
+        'type': 'integer',
+        'default': 300,
+        'maximum': 1000,
+        'minimum': 0,
+    }
+    aimdOptions['AIMD Thermostat Time'] = {
+        'type': 'string',
+        'default': '10_fs',
+    }
+    aimdOptions['AIMD RunTime'] = {
+        'type': 'integer',
+        'default': 200,
+    }
+
+    opts = {'userOptions': [ userOptions, aimdOptions ] }
 
     return opts
 
@@ -161,21 +170,21 @@ def generateInputFile(opts):
     ri = opts['RI Approximation']
     auxbasis = 'None'
 
-    rijbasis = {'6-31G(d)':'AutoAux',
-    'cc-pVDZ':'Def2/J', 'cc-pVTZ':'Def2/J', 'cc-pVQZ':'Def2/J',
-    'aug-cc-pVDZ':'AutoAux', 'aug-cc-pVTZ':'AutoAux', 'aug-cc-pVQZ':'AutoAux',
-    'def2-SVP':'Def2/J', 'def2-TZVP':'Def2/J', 'def2-QZVP':'Def2/J',
-    'def2-TZVPP':'Def2/J', 'def2-QZVPP':'Def2/J',
-    'def2-TZVPPD':'AutoAux', 'def2-QZVPPD':'AutoAux',
-    'ma-def2-SVP':'AutoAux', 'ma-def2-TZVP':'AutoAux', 'ma-def2-QZVP':'AutoAux'}
+    rijbasis = {'6-31G(d)': 'AutoAux',
+                'cc-pVDZ': 'Def2/J', 'cc-pVTZ': 'Def2/J', 'cc-pVQZ': 'Def2/J',
+                'aug-cc-pVDZ': 'AutoAux', 'aug-cc-pVTZ': 'AutoAux', 'aug-cc-pVQZ': 'AutoAux',
+                'def2-SVP': 'Def2/J', 'def2-TZVP': 'Def2/J', 'def2-QZVP': 'Def2/J',
+                'def2-TZVPP': 'Def2/J', 'def2-QZVPP': 'Def2/J',
+                'def2-TZVPPD': 'AutoAux', 'def2-QZVPPD': 'AutoAux',
+                'ma-def2-SVP': 'AutoAux', 'ma-def2-TZVP': 'AutoAux', 'ma-def2-QZVP': 'AutoAux'}
 
-    rijkbasis = {'6-31G(d)':'AutoAux',
-    'cc-pVDZ':'cc-pVDZ/JK', 'cc-pVTZ':'cc-pVTZ/JK', 'cc-pVQZ':'cc-pVQZ/JK',
-    'aug-cc-pVDZ':'aug-cc-pVDZ/JK', 'aug-cc-pVTZ':'aug-cc-pVTZ/JK', 'aug-cc-pVQZ':'aug-cc-pVQZ/JK',
-    'def2-SVP':'Def2/JK', 'def2-TZVP':'Def2/JK', 'def2-QZVP':'Def2/JK',
-    'def2-TZVPP':'Def2/JK', 'def2-QZVPP':'Def2/JK',
-    'def2-TZVPPD':'aug-cc-pVTZ/JK', 'def2-QZVPPD':'aug-cc-pVQZ/JK',
-    'ma-def2-SVP':'aug-cc-pVDZ/JK', 'ma-def2-TZVP':'aug-cc-pVTZ/JK', 'ma-def2-QZVP':'aug-cc-pVQZ/JK'}
+    rijkbasis = {'6-31G(d)': 'AutoAux',
+                 'cc-pVDZ': 'cc-pVDZ/JK', 'cc-pVTZ': 'cc-pVTZ/JK', 'cc-pVQZ': 'cc-pVQZ/JK',
+                 'aug-cc-pVDZ': 'aug-cc-pVDZ/JK', 'aug-cc-pVTZ': 'aug-cc-pVTZ/JK', 'aug-cc-pVQZ': 'aug-cc-pVQZ/JK',
+                 'def2-SVP': 'Def2/JK', 'def2-TZVP': 'Def2/JK', 'def2-QZVP': 'Def2/JK',
+                 'def2-TZVPP': 'Def2/JK', 'def2-QZVPP': 'Def2/JK',
+                 'def2-TZVPPD': 'aug-cc-pVTZ/JK', 'def2-QZVPPD': 'aug-cc-pVQZ/JK',
+                 'ma-def2-SVP': 'aug-cc-pVDZ/JK', 'ma-def2-TZVP': 'aug-cc-pVTZ/JK', 'ma-def2-QZVP': 'aug-cc-pVQZ/JK'}
 
     # Convert to code-specific strings
     calcStr = ''
@@ -185,8 +194,10 @@ def generateInputFile(opts):
         calcStr = 'Opt'
     elif calculate == 'Frequencies':
         calcStr = 'Opt Freq'
-    elif calculate == 'AIMD':
+    elif calculate == 'Dynamics':
         calcStr = 'MD'
+    elif calculate == 'Transition State':
+        calcStr = 'OptTS'
     else:
         raise Exception('Unhandled calculation type: %s' % calculate)
 
@@ -210,7 +221,6 @@ def generateInputFile(opts):
         else:
             auxbasis = rijkbasis[basis]
         ri = ' ' + ri
-    
 
     if autoaux == True:
         auxbasis = 'AutoAux'
@@ -243,9 +253,11 @@ def generateInputFile(opts):
         output += '%md\n'
         output += '   timestep ' + opts['AIMD TimeStep'] + '\n'
         output += '   initvel ' + opts['AIMD Initvel'] + '_k\n'
-        output += '   thermostat berendsen ' + opts['AIMD Thermostat Temp'] + '_k timecon ' + opts['AIMD Thermostat Time'] + '\n'
+        output += '   thermostat berendsen ' + \
+            str(opts['AIMD Thermostat Temp']) + '_k timecon ' + \
+            opts['AIMD Thermostat Time'] + '\n'
         output += '   dump position stride 1 filename \"trajectory.xyz\"\n'
-        output += '   run ' + opts['AIMD RunTime'] + '\n'
+        output += '   run ' + str(opts['AIMD RunTime']) + '\n'
         output += 'end\n\n'
 
     if mos == True:
@@ -287,6 +299,7 @@ def generateInput():
     # the value of the $$inputFileName$$ and $$inputFileBaseName$$ keywords.
     result['mainFile'] = '%s.inp' % baseName
     return result
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser('Generate a %s input file.' % targetName)
