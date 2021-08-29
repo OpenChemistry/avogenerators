@@ -95,7 +95,7 @@ def getOptions():
 def generateInputFile(opts):
     output = ''
     for key in opts:
-        output += '%s: %s\n' % (key, opts[key])
+        output += f'{key}: {opts[key]}\n'
 
     output += '\n\nCurrent molecule:\n$$coords:SZx1y1z0N$$\n'
 

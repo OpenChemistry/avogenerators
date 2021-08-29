@@ -123,16 +123,16 @@ def generateInputFile(opts):
 
     output += '#\n# %s\n#\n\n' % title
 
-    output += '%-15s%s\n\n' % ('run', calcStr)
+    output += f'{"run":<15}{calcStr}\n\n'
 
-    output += '%-15s%s\n' % ('method', theoryStr)
+    output += f'{"method":<15}{theoryStr}\n'
     if dispersion != 'Off':
-        output += '%-15s%s\n' % ('dispersion', dispStr)
-    output += '%-15s%s\n' % ('basis', basisStr)
-    output += '%-15s%s\n' % ('charge', charge)
-    output += '%-15s%s\n\n' % ('spinmult', multiplicity)
+        output += f'{"dispersion":<15}{dispStr}\n'
+    output += f'{"basis":<15}{basisStr}\n'
+    output += f'{"charge":<15}{charge}\n'
+    output += f'{"spinmult":<15}{multiplicity}\n\n'
 
-    output += '%-15s%s\n\n' % ('coordinates', '%s.xyz' % baseName)
+    output += f'{"coordinates":<15}{baseName}.xyz\n\n'
 
     output += 'end\n'
 
@@ -160,15 +160,14 @@ def generateInput():
     # Input file text -- will appear in the same order in the GUI as they are
     # listed in the array:
     files = []
-    files.append({'filename': '%s.%s' % (
-        baseName, extension), 'contents': inp[0]})
-    files.append({'filename': '%s.xyz' % baseName, 'contents': inp[1]})
+    files.append({'filename': f'{baseName}.{extension}', 'contents': inp[0]})
+    files.append({'filename': f'{baseName}.xyz', 'contents': inp[1]})
     if debug:
         files.append({'filename': 'debug_info', 'contents': stdinStr})
     result['files'] = files
     # Specify the main input file. This will be used by MoleQueue to determine
     # the value of the $$inputFileName$$ and $$inputFileBaseName$$ keywords.
-    result['mainFile'] = '%s.%s' % (baseName, extension)
+    result['mainFile'] = f'{baseName}.{extension}'
     return result
 
 if __name__ == "__main__":

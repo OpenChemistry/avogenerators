@@ -111,7 +111,7 @@ def generateInputFile(opts):
     output += '$comment\n   %s\n$end\n\n' % title
 
     output += '$molecule\n'
-    output += '   %s %s\n' % (charge, multiplicity)
+    output += f'   {charge} {multiplicity}\n'
     output += '$$coords:___Sxyz$$\n'
     output += '$end\n'
 
