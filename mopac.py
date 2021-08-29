@@ -139,7 +139,7 @@ def generateInputFile(opts):
     elif multiplicity == 6:
         multStr = 'SEXTET'
     else:
-        raise Exception('Unhandled multiplicty: %d' % multiplicity)
+        raise Exception('Unhandled multiplicity: %d' % multiplicity)
 
     # Calculation type:
     calcStr = ''

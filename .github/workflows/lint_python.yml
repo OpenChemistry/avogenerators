@@ -11,7 +11,7 @@ jobs:
                          flake8-comprehensions isort mypy pytest pyupgrade safety
       - run: bandit --recursive .
       - run: black --check . || true
-      - run: codespell --ignore-words-list="a,nd,te"  #  --skip="*.css,*.js,*.lock"
+      - run: codespell --ignore-words-list="ba,nd,te"  #  --skip="*.css,*.js,*.lock"
       - run: flake8 . --count --select=E9,F63,F7,F82 --max-complexity=20
                       --max-line-length=127 --show-source --statistics
       - run: flake8 . --count --exit-zero --max-complexity=10
