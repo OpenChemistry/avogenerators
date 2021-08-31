@@ -30,6 +30,15 @@ symbols = [
 
 
 def getOptions():
+    """
+    >>> opts = getOptions()
+    >>> "userOptions" in opts
+    True
+    >>> "inputMoleculeFormat" in opts
+    True
+    >>> len(opts["userOptions"])
+    6
+    """
     userOptions = {}
 
     userOptions['Title'] = {}
