@@ -114,13 +114,13 @@ def generateInputFile(cjson, opts):
             theoryLines.append('mf2 = mp.{}(mf)\n'.format(theory))
             theoryLines.append('mf2.kernel()\n')
     else:
-        raise Exception('Unhandled theory type:'.format(theory))
+        raise Exception('Unhandled theory type: {}'.format(theory))
 
     calcStr = ''
     if calculate == 'Single Point':
         pass
     else:
-        raise Exception('Unhandled calculation type:'.format(calculate))
+        raise Exception('Unhandled calculation type: {}'.format(calculate))
 
     # Create input file
     output = ''
