@@ -83,22 +83,22 @@ def generateInputFile(cjson, opts):
         else:
             basisStr = basis
     else:
-        raise Exception('Unhandled basis type: {}'.format(basis))
+        raise Exception(f'Unhandled basis type: {basis}')
 
     theoryImport = ''
     theoryLines = []
     # Intentionally not using elif here:
     if theory == 'RHF':
         theoryImport = "from pyscf import gto,scf\n"
-        theoryLines.append('mf = scf.{}(mol)\n'.format(theory))
+        theoryLines.append(f'mf = scf.{theory}(mol)\n')
         theoryLines.append('mf.kernel()\n')
     elif theory == 'ROHF':
         theoryImport = "from pyscf import gto,scf\n"
-        theoryLines.append('mf = scf.{}(mol)\n'.format(theory))
+        theoryLines.append(f'mf = scf.{theory}(mol)\n')
         theoryLines.append('Amf.kernel()\n')
     elif theory == 'UHF':
         theoryImport = "from pyscf import gto,scf\n"
-        theoryLines.append('mf = scf.{}(mol)\n'.format(theory))
+        theoryLines.append(f'mf = scf.{theory}(mol)\n')
         theoryLines.append('mf.kernel()\n')
     elif theory == 'MP2':
         theoryImport = "from pyscf import gto,scf,mp\n"
@@ -106,33 +106,33 @@ def generateInputFile(cjson, opts):
         if multiplicity == 1:
             theoryLines.append('mf = scf.RHF(mol)\n')
             theoryLines.append('mf.kernel()\n')
-            theoryLines.append('mf2 = mp.{}(mf)\n'.format(theory))
+            theoryLines.append(f'mf2 = mp.{theory}(mf)\n')
             theoryLines.append('mf2.kernel()\n')
         else:
             theoryLines.append('mf = scf.UHF(mol)\n')
             theoryLines.append('mf.kernel()\n')
-            theoryLines.append('mf2 = mp.{}(mf)\n'.format(theory))
+            theoryLines.append(f'mf2 = mp.{theory}(mf)\n')
             theoryLines.append('mf2.kernel()\n')
     else:
-        raise Exception('Unhandled theory type:'.format(theory))
+        raise Exception(f'Unhandled theory type:{theory}')
 
     calcStr = ''
     if calculate == 'Single Point':
         pass
     else:
-        raise Exception('Unhandled calculation type:'.format(calculate))
+        raise Exception(f'Unhandled calculation type: {calculate}')
 
     # Create input file
     output = ''
-    output += "# Title: {}\n".format(title)
-    output += "{}".format(theoryImport)
+    output += f"# Title: {title}\n"
+    output += f"{theoryImport}"
     output += "mol = gto.Mole()\n"
     output += "mol.atom = '''\n"
     output += '$$coords:___Sxyz$$\n'
     output += "'''\n"
-    output += 'mol.basis = \'{}\'\n'.format(basisStr)
-    output += 'mol.charge = {}\n'.format(charge)
-    output += 'mol.spin = {}\n'.format(multiplicity - 1)
+    output += f'mol.basis = \'{basisStr}\'\n'
+    output += f'mol.charge = {charge}\n'
+    output += f'mol.spin = {multiplicity - 1}\n'
     output += 'mol.build()\n'
     for line in theoryLines:
         output += line
@@ -164,13 +164,13 @@ def generateInput():
     result['files'] = files
     # Specify the main input file. This will be used by MoleQueue to determine
     # the value of the $$inputFileName$$ and $$inputFileBaseName$$ keywords.
-    result['mainFile'] = '{}.{}'.format(baseName, extension)
+    result['mainFile'] = f'{baseName}.{extension}'
     return result
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        'Generate a {} input file.'.format(targetName))
+        f'Generate a {targetName} input file.')
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--print-options', action='store_true')
     parser.add_argument('--generate-input', action='store_true')

@@ -54,6 +54,8 @@ def getOptions():
     altOptions['Alternate Basis Set']['type'] = 'string'
     altOptions['Alternate Basis Set']['default'] = ''
 
+    userOptions['Filename Base'] = {}
+    userOptions['Filename Base']['type'] = 'string'
     userOptions['Filename Base']['default'] = 'job'
 
     userOptions['Processor Cores']['default'] = 8

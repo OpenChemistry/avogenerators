@@ -111,7 +111,7 @@ def getOptions():
     # properties
     propertyPatterns = []
     for basis in userOptions['Basis']['values']:
-        propertyPatterns.append({"regexp": "\*\\s+library\\s+([^\\n]+)"})
+        propertyPatterns.append({"regexp": "\\*\\s+library\\s+([^\\n]+)"})
 
     propertyPatterns.append(
         {"regexp": "units\\s+(an|angstroms|au|atom|bohr|nm|nanometers|pm|picometers)"})

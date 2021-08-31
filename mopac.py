@@ -54,7 +54,6 @@ def getOptions():
     userOptions['Charge']['minimum'] = -9
     userOptions['Charge']['maximum'] = 9
 
-
     userOptions['COSMO'] = {}
     userOptions['COSMO']['type'] = "boolean"
     userOptions['COSMO']['default'] = True
@@ -82,7 +81,7 @@ def getOptions():
     userOptions['Other Solvent Dielectric'] = {}
     userOptions['Other Solvent Dielectric']['type'] = 'string'
     userOptions['Other Solvent Dielectric']['default'] = '0.00'
-    
+
     userOptions['HF Type'] = {}
     userOptions['HF Type']['type'] = "stringList"
     userOptions['HF Type']['default'] = 'RHF'
@@ -139,7 +138,7 @@ def generateInputFile(opts):
     elif multiplicity == 6:
         multStr = 'SEXTET'
     else:
-        raise Exception('Unhandled multiplicty: %d' % multiplicity)
+        raise Exception('Unhandled multiplicity: %d' % multiplicity)
 
     # Calculation type:
     calcStr = ''

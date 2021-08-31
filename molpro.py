@@ -117,7 +117,7 @@ def generateInputFile(cjson, opts):
             theoryKey = 'uks,b3lyp'
         else:
             raise Exception('Unhandled theory type: %s' % theory)
-        theoryStr += '{%s\n%s}\n' % (theoryKey, wavefnStr)
+        theoryStr += f'{{{theoryKey}\n{wavefnStr}}}\n'
 
     calcStr = ''
     if calculate == 'Single Point':
@@ -179,14 +179,13 @@ def generateInput():
     # Input file text -- will appear in the same order in the GUI as they are
     # listed in the array:
     files = []
-    files.append({'filename': '%s.%s' % (
-        baseName, extension), 'contents': inp})
+    files.append({'filename': f'{baseName}.{extension}', 'contents': inp})
     if debug:
         files.append({'filename': 'debug_info', 'contents': stdinStr})
     result['files'] = files
     # Specify the main input file. This will be used by MoleQueue to determine
     # the value of the $$inputFileName$$ and $$inputFileBaseName$$ keywords.
-    result['mainFile'] = '%s.%s' % (baseName, extension)
+    result['mainFile'] = f'{baseName}.{extension}'
     return result
 
 if __name__ == "__main__":
