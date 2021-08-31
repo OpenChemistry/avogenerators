@@ -12,7 +12,7 @@ import sys
 
 # Some globals:
 debug = False
-warnings = []
+warnings = []  # type: ignore
 extension = 'dal'
 
 # element lookups
