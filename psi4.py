@@ -105,7 +105,7 @@ def generateInputFile(opts):
     multiplicity = opts['Multiplicity']
     nCores = int(opts['Processor Cores'])
     memory = int(opts['Memory'])
-    
+
     # Convert to code-specific strings
     calcStr = ''
     if calculate == 'Single Point':
@@ -121,9 +121,9 @@ def generateInputFile(opts):
 
     output += "set_num_threads(" + str(nCores) + ")\n"
     output += "memory " + str(memory) + "GB\n"
-    output += 'set basis {}\n'.format(basis)
+    output += f'set basis {basis}\n'
     output += 'molecule {\n'
-    output += '{} {}\n'.format(charge, multiplicity)
+    output += f'{charge} {multiplicity}\n'
     output += '$$coords:___Sxyz$$\n'
     output += '}\n\n'
     if calcStr == 'optimize':
@@ -133,7 +133,7 @@ def generateInputFile(opts):
     if 'SAPT' in theory:
         output += 'auto_fragments(\'\')\n'
 
-    output += '{}(\"{}\")\n'.format(calcStr, theory)
+    output += f'{calcStr}(\"{theory}\")\n'
 
     return output
 

@@ -231,14 +231,14 @@ def generateInputFile(opts):
     theory = theory + disp + ri
 
     # put the pieces together
-    code = '{} {} {} {}'.format(calcStr, theory, basis, solvation)
+    code = f'{calcStr} {theory} {basis} {solvation}'
 
     output = ''
 
     output += '# avogadro generated ORCA file\n'
     output += '# ' + title + '\n'
     output += '# \n'
-    output += '! {}\n\n'.format(code)
+    output += f'! {code}\n\n'
     output += '%maxcore ' + str(memory) + '\n\n'
     output += '%pal\n'
     output += '   nprocs ' + str(nCores) + '\n'
@@ -266,7 +266,7 @@ def generateInputFile(opts):
         output += '   print[p_basis] 2\n'
         output += 'end\n\n'
 
-    output += '* xyz {} {}\n'.format(charge, multiplicity)
+    output += f'* xyz {charge} {multiplicity}\n'
     output += '$$coords:___Sxyz$$\n'
     output += '*\n\n\n'
 

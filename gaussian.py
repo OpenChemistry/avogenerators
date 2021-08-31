@@ -51,7 +51,7 @@ def getOptions():
     userOptions['Alternate Basis Set Name'] = {}
     userOptions['Alternate Basis Set Name']['type'] = 'string'
     userOptions['Alternate Basis Set Name']['default'] = ''
-    
+
     userOptions['Filename Base'] = {}
     userOptions['Filename Base']['type'] = 'string'
     userOptions['Filename Base']['default'] = 'job'
@@ -125,7 +125,7 @@ def generateInputFile(opts):
         output += '#p %s' % (theory)
         warnings.append('Ignoring basis set for semi-empirical calculation.')
     else:
-        output += '#p %s/%s' % (theory, basis.replace(' ', ''))
+        output += '#p {}/{}'.format(theory, basis.replace(' ', ''))
 
     # Calculation type
     if calculate == 'Single Point':

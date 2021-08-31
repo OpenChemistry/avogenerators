@@ -107,9 +107,7 @@ def generateInputFile(cjson, opts):
         if len(atoms[z]) > 0:
             coordfile += 'Charge=%d.0 Atoms=%d\n' % (z, len(atoms[z]))
             for atom in atoms[z]:
-                coordfile += '%s%15.5f%15.5f%15.5f\n' % (
-                    symbols[z], atom[0], atom[1], atom[2])
-
+                coordfile += f'{symbols[z]}{atom[0]:15.5f}{atom[1]:15.5f}{atom[2]:15.5f}\n'
     coordfile += ''
     coordfile += '\n\n'
 
@@ -157,15 +155,14 @@ def generateInput():
     # listed in the array:
     files = []
     # files.append({'filename': '%s.com'%baseName, 'contents': inp})
-    files.append({'filename': '%s.%s' % (
-        baseName, extension), 'contents': inp[0]})
-    files.append({'filename': '%s.mol' % baseName, 'contents': inp[1]})
+    files.append({'filename': f'{baseName}.{extension}', 'contents': inp[0]})
+    files.append({'filename': f'{baseName}.mol', 'contents': inp[1]})
     if debug:
         files.append({'filename': 'debug_info', 'contents': stdinStr})
     result['files'] = files
     # Specify the main input file. This will be used by MoleQueue to determine
     # the value of the $$inputFileName$$ and $$inputFileBaseName$$ keywords.
-    result['mainFile'] = '%s.%s' % (baseName, extension)
+    result['mainFile'] = f'{baseName}.{extension}'
 
     if len(warnings) > 0:
         result['warnings'] = warnings
