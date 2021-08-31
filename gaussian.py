@@ -91,9 +91,7 @@ def generateInputFile(opts):
     theory = opts['Theory']
     if opts["Alternate Theory"]:
         theory = opts["Alternate Theory"]
-    basis = opts['Basis']
-    if opts['Alternate Basis Set']:
-        basis = opts['Alternate Basis Set']
+    basis = opts['Alternate Basis Set'] or opts['Basis']
     multiplicity = opts['Multiplicity']
     charge = opts['Charge']
     outputFormat = opts['Output Format']
