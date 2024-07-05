@@ -285,9 +285,13 @@ def generateInputFile(opts):
     else:
         disp = " " + disp
 
-    if ri in ["None", "NORI"]:
+    if ri in ["None"]:
         autoaux = False
         ri = ""
+    # see https://discuss.avogadro.cc/t/orca-input-generator-does-not-print-nori-when-selected/5489
+    elif ri in ["NORI"]:
+        autoaux = False
+        ri = " " + ri
     else:
         if ri in ["RIJONX", "RIJCOSX"]:
             auxbasis = rijbasis[basis]
