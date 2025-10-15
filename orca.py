@@ -51,7 +51,13 @@ def getOptions():
 
     userOptions["Print Molecular Orbitals"] = {
         "type": "boolean",
+        "default": True,
+    }
+
+    userOptions["Constrain Geometry"] = {
+        "type": "boolean",
         "default": False,
+        "toolTip": "Use constrained geometry optimization",
     }
 
     userOptions["Theory"] = {
@@ -113,7 +119,7 @@ def getOptions():
         "toolTip": "Gaussian basis set",
     }
 
-    userOptions["Solvation"] = {
+    userOptions["Solvent"] = {
         "type": "stringList",
         "default": 0,
         "values": [
@@ -125,24 +131,24 @@ def getOptions():
             "Ethanol",
             "Methanol",
             "CCl4",
-                    "CH2Cl2",
-        "Chloroform",
-        "DMSO",
-        "DMF",
-        "Hexane",
-        "Toluene",
-        "Pyridine",
-        "THF",
-        "Toluene",
+            "CH2Cl2",
+            "Chloroform",
+            "DMSO",
+            "DMF",
+            "Hexane",
+            "Toluene",
+            "Pyridine",
+            "THF",
+            "Toluene",
         ],
-        "toolTip": "Solvent Model",
+        "toolTip": "Solvent",
     }
 
-    userOptions["Solvation Type"] = {
+    userOptions["Solvation Model"] = {
         "type": "stringList",
         "default": 0,
         "values": ["CPCM", "SMD"],
-        "toolTip": "Solvent model",
+        "toolTip": "Solvation Method",
     }
 
     userOptions["Filename Base"] = {
@@ -166,11 +172,11 @@ def getOptions():
         "toolTip": "Total spin multiplicity of the system",
     }
 
-    userOptions["AutoAux"] = {
-        "type": "boolean",
-        "default": False,
-        "toolTip": "Automatically select auxiliary basis set",
-    }
+    #userOptions["AutoAux"] = {
+    #    "type": "boolean",
+    #    "default": False,
+    #    "toolTip": "Automatically select auxiliary basis set",
+    #}
 
     aimdOptions = {"tabName": "Dynamics"}
     aimdOptions["AIMD TimeStep"] = {
@@ -197,11 +203,12 @@ def getOptions():
     }
 
     opts = {"userOptions": [userOptions, aimdOptions]}
+    opts['inputMoleculeFormat'] = 'cjson'
 
     return opts
 
 
-def generateInputFile(opts):
+def generateInputFile(opts,cjson):
     # Extract options:
     title = opts["Title"]
     calculate = opts["Calculation Type"]
@@ -211,10 +218,11 @@ def generateInputFile(opts):
     multiplicity = opts["Multiplicity"]
     nCores = int(opts["Processor Cores"])
     memory = int((opts["Memory"] * 1024) / nCores)
-    solvtype = opts["Solvation Type"]
-    solvent = opts["Solvation"]
+    solvtype = opts["Solvation Model"]
+    solvent = opts["Solvent"]
     mos = opts["Print Molecular Orbitals"]
-    autoaux = opts["AutoAux"]
+    constrain = opts["Constrain Geometry"]
+    # autoaux = opts["AutoAux"]
     disp = opts["Dispersion Correction"]
     ri = opts["RI Approximation"]
     auxbasis = "None"
@@ -275,9 +283,9 @@ def generateInputFile(opts):
         raise Exception("Unhandled calculation type: %s" % calculate)
 
     solvation = ""
-    if not "None" in opts["Solvation"] and solvtype == "CPCM":
+    if not "None" in opts["Solvent"] and solvtype == "CPCM":
         solvation = "CPCM(" + solvent + ")"
-    elif not "None" in opts["Solvation"] and solvtype == "SMD":
+    elif not "None" in opts["Solvent"] and solvtype == "SMD":
         solvation = "CPCM"
 
     if disp == "None":
@@ -299,16 +307,19 @@ def generateInputFile(opts):
             auxbasis = rijkbasis[basis]
         ri = " " + ri
 
-    if autoaux == True:
-        auxbasis = "AutoAux"
+    #if autoaux == True:
+    #    auxbasis = "AutoAux"
 
     if auxbasis != "None":
         basis = basis + " " + auxbasis
 
-    theory = theory + disp + ri
-
-    # put the pieces together
-    code = f"{calcStr} {theory} {basis} {solvation}"
+    if "-3c" in theory or "-3C" in theory:
+        # -3c composite methods have everything together
+        code = f"{calcStr} {theory} {ri} {solvation}"
+    else:
+        theory = theory + disp + ri
+        # put the pieces together
+        code = f"{calcStr} {theory} {basis} {solvation}"
 
     output = ""
 
@@ -317,10 +328,11 @@ def generateInputFile(opts):
     output += "# \n"
     output += f"! {code}\n\n"
     output += "%maxcore " + str(memory) + "\n\n"
-    output += "%pal\n"
-    output += "   nprocs " + str(nCores) + "\n"
-    output += "end\n\n"
-    if not "None" in opts["Solvation"] and solvtype == "SMD":
+    if nCores > 1:
+        output += "%pal\n"
+        output += "   nprocs " + str(nCores) + "\n"
+        output += "end\n\n"
+    if not "None" in opts["Solvent"] and solvtype == "SMD":
         output += "%cpcm\n"
         output += "   smd true\n"
         output += '   SMDSolvent "' + solvent + '"\n'
@@ -347,6 +359,52 @@ def generateInputFile(opts):
         output += "   print[p_basis] 2\n"
         output += "end\n\n"
 
+    if constrain == True:
+        # check for constraints and frozen atoms in cjson
+        output += "%geom Constraints\n"
+
+        # look for bond, angle, torsion constraints
+        if "constraints" in cjson:
+            # loop through the output
+            # e.g. "{ B N1 N2 value C }"
+            for constraint in cjson["constraints"]:
+                if len(constraint) == 3:
+                    # distance
+                    value, atom1, atom2 = constraint
+                    output += f"{{ B {atom1} {atom2} {value:.6f} C }}\n"
+                if len(constraint) == 4:
+                    # angle
+                    value, atom1, atom2, atom3 = constraint
+                    output += f"{{ A {atom1} {atom2} {atom3} {value:.6f} C }}\n"
+                if len(constraint) == 5:
+                    # torsion / dihedral
+                    value, atom1, atom2, atom3, atom4 = constraint
+                    output += f"{{ D {atom1} {atom2} {atom3} {atom4} {value:.6f} C }}\n"
+
+        # look for frozen atoms
+        if "frozen" in cjson["atoms"]:
+            # two possibilities - same number of atoms
+            # or .. 3*number of atoms
+            frozen = cjson["atoms"]["frozen"]
+            atomCount = len(cjson["atoms"]["elements"]["number"])
+            if len(frozen) == atomCount:
+                # look for 1 or 0
+                for i in range(len(frozen)):
+                    if frozen[i] == 1:
+                        output += f"{{ C {i} C }}\n"
+            elif len(frozen) == 3 * atomCount:
+                # look for 1 or 0 - x, y, z for each atom
+                for i in range(0, len(frozen), 3):
+                    if frozen[i] == 0:
+                        output += f"{{ X {i} C }}\n"
+                    if frozen[i + 1] == 0:
+                        output += f"{{ Y {i} C }}\n"
+                    if frozen[i + 2] == 0:
+                        output += f"{{ Z {i} C }}\n"
+
+        output += "end\n"
+        output += "end\n\n"
+
     output += f"* xyz {charge} {multiplicity}\n"
     output += "$$coords:___Sxyz$$\n"
     output += "*\n\n\n"
@@ -362,7 +420,7 @@ def generateInput():
     opts = json.loads(stdinStr)
 
     # Generate the input file
-    inp = generateInputFile(opts["options"])
+    inp = generateInputFile(opts["options"], opts["cjson"])
 
     # Basename for input files:
     baseName = opts["options"]["Filename Base"]
