@@ -83,6 +83,7 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str], list[str]]:
     solvent         = opts["Solvent"]
     disp            = opts["basic_disp_corr"]
     print_mos: bool = opts["basic_print_mos"]
+    use_symmetry: bool = opts["basic_use_symmetry"]
     print_level     = Output(opts["basic_print_level"])
     constrain: bool = opts["basic_constrain"]
 
@@ -166,6 +167,9 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str], list[str]]:
 
     if print_mos:
         simple_keywords.extend([Output.PRINTMOS, Output.PRINTBASIS])
+
+    if use_symmetry:
+        simple_keywords.append("UseSym")
 
     if print_level != "NormalPrint":
         simple_keywords.append(print_level)

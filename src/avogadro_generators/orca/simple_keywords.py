@@ -93,6 +93,12 @@ class Output(StrEnum):
     KEEPTRANSDENSITY = "KeepTransDensity"
 
 
+class Symmetry(StrEnum):
+    """Control of symmetry handling."""
+
+    USESYM = "UseSym"
+
+
 class Grid(StrEnum):
     """Control of Numerical Integration Grids."""
 
@@ -157,6 +163,7 @@ def match_simple_keyword(kwd: str):
         DeterminantType,
         Opt,
         Output,
+        Symmetry,
         Grid,
         RIApproximation,
         PartialCharges,
