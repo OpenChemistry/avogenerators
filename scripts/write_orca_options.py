@@ -82,6 +82,7 @@ class BasicOption:
     label: str
     options: tuple | None = None
     toolTip: str | None = None
+    order: int | None = None
     hide: bool | None = None
     minimum: int | float | None = None
     maximum: int | float | None = None
@@ -242,6 +243,7 @@ class BasicTab:
             dtype="stringList",
             default=0,
             label="Dispersion Correction",
+            order=0,
             options=(
                 Disp.NODISP,
                 Disp.D3BJ,
@@ -255,11 +257,19 @@ class BasicTab:
             dtype="boolean",
             default=True,
             label="Print Molecular Orbitals",
+            order=1,
+        ),
+        "basic_constrain": BasicOption(
+            dtype="boolean",
+            default=False,
+            label="Use Constraints",
+            order=2,
         ),
         "basic_print_level": BasicOption(
             dtype="stringList",
             default=2,  # NormalPrint
             label="Print Level",
+            order=3,
             options=(
                 Output.MINIPRINT,
                 Output.SMALLPRINT,
@@ -267,16 +277,19 @@ class BasicTab:
                 Output.LARGEPRINT,
             ),
         ),
-        "basic_constrain": BasicOption(
+        "basic_use_symmetry": BasicOption(
             dtype="boolean",
             default=False,
-            label="Use Constraints",
+            label="Use Symmetry",
+            toolTip="Emit the UseSym simple keyword.",
+            order=4,
         ),
         "basic_simple_keywords": BasicOption(
             dtype="string",
             default="",
             label="Additional Simple Keywords",
             toolTip="Comma- or whitespace-separated list of simple input keywords.",
+            order=5,
         ),
     }
     # fmt: on
@@ -310,6 +323,9 @@ class BasicTab:
 
             if val.toolTip is not None:
                 tab += f'toolTip = "{val.toolTip}"\n'
+
+            if val.order is not None:
+                tab += f"order = {val.order}\n"
 
             tab += f'tab = "{cls.name}"\n\n'
 

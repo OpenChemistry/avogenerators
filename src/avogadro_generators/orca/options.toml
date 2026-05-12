@@ -170,12 +170,21 @@ values = [
     "NL",
     "SCNL",
 ]
+order = 0
 tab = "Basic"
 
 ["basic_print_mos"]
 label = "Print Molecular Orbitals"
 type = "boolean"
 default = true
+order = 1
+tab = "Basic"
+
+["basic_constrain"]
+label = "Use Constraints"
+type = "boolean"
+default = false
+order = 2
 tab = "Basic"
 
 ["basic_print_level"]
@@ -188,12 +197,15 @@ values = [
     "NormalPrint",
     "LargePrint",
 ]
+order = 3
 tab = "Basic"
 
-["basic_constrain"]
-label = "Use Constraints"
+["basic_use_symmetry"]
+label = "Use Symmetry"
 type = "boolean"
 default = false
+toolTip = "Add UseSym keyword."
+order = 4
 tab = "Basic"
 
 ["basic_simple_keywords"]
@@ -201,6 +213,7 @@ label = "Additional Simple Keywords"
 type = "string"
 default = ""
 toolTip = "Comma- or whitespace-separated list of simple input keywords."
+order = 5
 tab = "Basic"
 
 [Basis_pople]
@@ -538,56 +551,56 @@ tab = "SCF"
 [SCF_TOL_E]
 label = "Energy Tolerance"
 type = "string"
-default = 1e-08
+default = 1e-06
 toolTip = "Set the SCF energy convergence criteria."
 tab = "SCF"
 
 [SCF_TOL_RMSP]
 label = "RMS Density Tolerance"
 type = "string"
-default = 5e-09
+default = 1e-06
 toolTip = "Set the SCF RMS density change convergence criteria."
 tab = "SCF"
 
 [SCF_TOL_MAXP]
 label = "Max Density Tolerance"
 type = "string"
-default = 1e-07
+default = 1e-05
 toolTip = "Set the SCF maximum density change convergence criteria."
 tab = "SCF"
 
 [SCF_TOL_ERR]
 label = "DIIS Error Tolerance"
 type = "string"
-default = 5e-07
+default = 1e-05
 toolTip = "Set the SCF DIIS Error convergence criteria."
 tab = "SCF"
 
 [SCF_TOL_G]
 label = "Orbital Gradient Tolerance"
 type = "string"
-default = 1e-05
+default = 5e-05
 toolTip = "Set the SCF orbital gradient convergence criteria."
 tab = "SCF"
 
 [SCF_TOL_X]
 label = "Orbital Rotation Angle Tolerance"
 type = "string"
-default = 1e-05
+default = 5e-05
 toolTip = "Set the SCF orbital rotation angle convergence criteria."
 tab = "SCF"
 
 [SCF_THRESH]
 label = "Integral Prescreening Threshold"
 type = "string"
-default = 2.5e-11
+default = 1e-10
 toolTip = "Set the SCF integral prescreening threshold."
 tab = "SCF"
 
 [SCF_TCUT]
 label = "Primitive Integral Prescreening Cutoff"
 type = "string"
-default = 2.5e-12
+default = 1e-11
 toolTip = "Set the SCF primitive integral prescreening threshold."
 tab = "SCF"
 
