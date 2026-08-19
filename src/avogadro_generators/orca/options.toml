@@ -41,8 +41,9 @@ values = [
     "OptTS",
     "Freq",
     "NumFreq",
+    "Counterpoise",
 ]
-toolTip = "Type of calculation to run"
+toolTip = "Type of calculation to run. Counterpoise treats each Avogadro layer as one fragment of the complex."
 tab = "Basic"
 
 ["Theory"]
@@ -538,56 +539,56 @@ tab = "SCF"
 [SCF_TOL_E]
 label = "Energy Tolerance"
 type = "string"
-default = 1e-08
+default = 1e-06
 toolTip = "Set the SCF energy convergence criteria."
 tab = "SCF"
 
 [SCF_TOL_RMSP]
 label = "RMS Density Tolerance"
 type = "string"
-default = 5e-09
+default = 1e-06
 toolTip = "Set the SCF RMS density change convergence criteria."
 tab = "SCF"
 
 [SCF_TOL_MAXP]
 label = "Max Density Tolerance"
 type = "string"
-default = 1e-07
+default = 1e-05
 toolTip = "Set the SCF maximum density change convergence criteria."
 tab = "SCF"
 
 [SCF_TOL_ERR]
 label = "DIIS Error Tolerance"
 type = "string"
-default = 5e-07
+default = 1e-05
 toolTip = "Set the SCF DIIS Error convergence criteria."
 tab = "SCF"
 
 [SCF_TOL_G]
 label = "Orbital Gradient Tolerance"
 type = "string"
-default = 1e-05
+default = 5e-05
 toolTip = "Set the SCF orbital gradient convergence criteria."
 tab = "SCF"
 
 [SCF_TOL_X]
 label = "Orbital Rotation Angle Tolerance"
 type = "string"
-default = 1e-05
+default = 5e-05
 toolTip = "Set the SCF orbital rotation angle convergence criteria."
 tab = "SCF"
 
 [SCF_THRESH]
 label = "Integral Prescreening Threshold"
 type = "string"
-default = 2.5e-11
+default = 1e-10
 toolTip = "Set the SCF integral prescreening threshold."
 tab = "SCF"
 
 [SCF_TCUT]
 label = "Primitive Integral Prescreening Cutoff"
 type = "string"
-default = 2.5e-12
+default = 1e-11
 toolTip = "Set the SCF primitive integral prescreening threshold."
 tab = "SCF"
 

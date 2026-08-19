@@ -20,6 +20,9 @@ class RunType(StrEnum):
     OPTTS   = "OptTS"
     FREQ    = "Freq"
     NUMFREQ = "NumFreq"
+    # Not an ORCA keyword: a series of single points writing out a
+    # Boys-Bernardi counterpoise correction, one job per fragment
+    COUNTERPOISE = "Counterpoise"
 
 
 class SemiEmpirical(StrEnum):
