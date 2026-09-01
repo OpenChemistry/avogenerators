@@ -48,29 +48,30 @@ in the generator do not cause the aforementioned window size issue.
 
 from dataclasses import dataclass
 from pathlib import Path
+from types import MappingProxyType
 
 from avogadro_generators.orca.basis_sets import (
-    PopleBasisSet,
-    def2BasisSet,
     JensenBasisSet,
-    ccBasisSet,
+    PopleBasisSet,
     RelativisticBasisSet,
+    ccBasisSet,
+    def2BasisSet,
 )
-from avogadro_generators.orca.dft import Composite, Functionals, Disp
-from avogadro_generators.orca.wft import MP2, CoupledCluster
-from avogadro_generators.orca.simple_keywords import (
-    RunType,
-    Output,
-)
+from avogadro_generators.orca.dft import Composite, Disp, Functionals
 from avogadro_generators.orca.implicit_solvation import Solvent
-from avogadro_generators.orca.input_blocks.elprop import ElProp
 from avogadro_generators.orca.input_blocks.basis import Basis
-from avogadro_generators.orca.input_blocks.scf import SCF
+from avogadro_generators.orca.input_blocks.elprop import ElProp
 from avogadro_generators.orca.input_blocks.option_extras import (
-    scf_extras,
     basis_extras,
     elprop_extras,
+    scf_extras,
 )
+from avogadro_generators.orca.input_blocks.scf import SCF
+from avogadro_generators.orca.simple_keywords import (
+    Output,
+    RunType,
+)
+from avogadro_generators.orca.wft import MP2, CoupledCluster
 
 
 @dataclass
@@ -92,7 +93,7 @@ class BasicTab:
 
     name = "Basic"
     # fmt: off
-    inputs = {
+    inputs = MappingProxyType({
         "Title": BasicOption(
             dtype="string",
             default="",
@@ -282,7 +283,7 @@ class BasicTab:
             label="Additional Simple Keywords",
             toolTip="Comma- or whitespace-separated list of simple input keywords.",
         ),
-    }
+    })
     # fmt: on
     @classmethod
     def write_tab(cls) -> str:
@@ -433,9 +434,7 @@ tabs = {
 }
 
 if __name__ == "__main__":
-    orca_toml = (
-        Path(__file__).parent.parent / "src/avogadro_generators/orca/options.toml"
-    )
+    orca_toml = Path(__file__).parent.parent / "src/avogadro_generators/orca/options.toml"
 
     toml = "# This file was automatically generated, do NOT modify manually!\n\n"
 

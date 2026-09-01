@@ -14,7 +14,7 @@ import sys
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--debug', action='store_true')
+    parser.add_argument("--debug", action="store_true")
     parser.add_argument("--lang", nargs="?", default="en")
     parser.add_argument("generator", action="store")
     args = parser.parse_args()
@@ -43,14 +43,12 @@ def main():
             from .qchem.qchem import generateInput
         case "terachem":
             from .terachem.terachem import generateInput
-    
+
     # Load the JSON passed by Avogadro
-    input = json.load(sys.stdin)
-    output = generateInput(input, args.debug)
+    inp = json.load(sys.stdin)
+    output = generateInput(inp, args.debug)
 
     if args.debug:
-        output["files"].append(
-            {"filename": "debug_info", "contents": input}
-        )
+        output["files"].append({"filename": "debug_info", "contents": inp})
 
     print(json.dumps(output))

@@ -13,62 +13,92 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str]]:
     warnings = []
 
     # Extract options:
-    opts = input_json['options']
-    title = opts['Title']
-    calculate = opts['Calculation Type']
-    theory = opts['Theory']
-    multiplicity = opts['Multiplicity']
-    charge = opts['Charge']
-    nCores = int(opts['Processor Cores'])
-    solvent = opts['Solvent']
-    optionaldielectric = opts['Other Solvent Dielectric']
-    hftype = opts['HF Type']
-    cosmo = opts['COSMO']
-    solventlist = {"Acetic acid": 6.15, "Acetone": 20.7, "Acetonitrile": 37.5,
-    "Anisole": 4.33, "Benzene": 2.27, "Bromobenzene": 5.17, "Carbon disulfide": 2.6,
-    "Carbon tetrachloride": 2.24, "Chlorobenzene": 5.62, "Chloroform": 4.81,
-    "Cyclohexane": 2.02, "Dibutyl ether": 3.1, "o-Dichlorobenzene": 9.93,
-    "1,2-Dichloroethane": 10.36, "Dichloromethane": 8.93, "Diethylamine": 3.6,
-    "Diethylether": 4.33, "1,2-Dimethoxyethane": 7.2, "N,N-Dimethylacetamide": 37.8,
-    "N,N-Dimethylformamide": 36.7, "Dimethylsulfoxide": 46.7, "1,4-Dioxane": 2.25,
-    "Ethanol": 24.5, "Ethyl acetate": 6.02, "Ethyl benzoate": 6.02, "Formamide": 111,
-    "Hexamethylphosphoramide": 30, "Isopropyl lcohol": 17.9, "Methanol": 32.7,
-    "2-Methyl-2-propanol": 10.9, "Nitrobenzene": 34.82, "Nitromethane": 35.87,
-    "Pyridine": 12.4, "Tetrahydrofuran": 7.58, "Toluene": 2.38, "Trichloroethylene": 3.4,
-    "Triethylamine": 2.42, "Trifluoroacetic acid": 8.55, "2,2,2-Trifluoroethanol": 8.55,
-    "Water": 80.1, "o-Xylene": 2.57}
+    opts = input_json["options"]
+    title = opts["Title"]
+    calculate = opts["Calculation Type"]
+    theory = opts["Theory"]
+    multiplicity = opts["Multiplicity"]
+    charge = opts["Charge"]
+    nCores = int(opts["Processor Cores"])
+    solvent = opts["Solvent"]
+    optionaldielectric = opts["Other Solvent Dielectric"]
+    hftype = opts["HF Type"]
+    cosmo = opts["COSMO"]
+    solventlist = {
+        "Acetic acid": 6.15,
+        "Acetone": 20.7,
+        "Acetonitrile": 37.5,
+        "Anisole": 4.33,
+        "Benzene": 2.27,
+        "Bromobenzene": 5.17,
+        "Carbon disulfide": 2.6,
+        "Carbon tetrachloride": 2.24,
+        "Chlorobenzene": 5.62,
+        "Chloroform": 4.81,
+        "Cyclohexane": 2.02,
+        "Dibutyl ether": 3.1,
+        "o-Dichlorobenzene": 9.93,
+        "1,2-Dichloroethane": 10.36,
+        "Dichloromethane": 8.93,
+        "Diethylamine": 3.6,
+        "Diethylether": 4.33,
+        "1,2-Dimethoxyethane": 7.2,
+        "N,N-Dimethylacetamide": 37.8,
+        "N,N-Dimethylformamide": 36.7,
+        "Dimethylsulfoxide": 46.7,
+        "1,4-Dioxane": 2.25,
+        "Ethanol": 24.5,
+        "Ethyl acetate": 6.02,
+        "Ethyl benzoate": 6.02,
+        "Formamide": 111,
+        "Hexamethylphosphoramide": 30,
+        "Isopropyl lcohol": 17.9,
+        "Methanol": 32.7,
+        "2-Methyl-2-propanol": 10.9,
+        "Nitrobenzene": 34.82,
+        "Nitromethane": 35.87,
+        "Pyridine": 12.4,
+        "Tetrahydrofuran": 7.58,
+        "Toluene": 2.38,
+        "Trichloroethylene": 3.4,
+        "Triethylamine": 2.42,
+        "Trifluoroacetic acid": 8.55,
+        "2,2,2-Trifluoroethanol": 8.55,
+        "Water": 80.1,
+        "o-Xylene": 2.57,
+    }
 
-    generated_input = ''
+    generated_input = ""
 
     # Multiplicity
-    multStr = ''
+    multStr = ""
     if multiplicity == 1:
-        multStr = 'SINGLET'
+        multStr = "SINGLET"
     elif multiplicity == 2:
-        multStr = 'DOUBLET'
+        multStr = "DOUBLET"
     elif multiplicity == 3:
-        multStr = 'TRIPLET'
+        multStr = "TRIPLET"
     elif multiplicity == 4:
-        multStr = 'QUARTET'
+        multStr = "QUARTET"
     elif multiplicity == 5:
-        multStr = 'QUINTET'
+        multStr = "QUINTET"
     elif multiplicity == 6:
-        multStr = 'SEXTET'
+        multStr = "SEXTET"
     else:
-        raise Exception('Unhandled multiplicity: %d' % multiplicity)
+        raise NotImplementedError(f"Unhandled multiplicity: {multiplicity}")
 
     # Calculation type:
-    calcStr = ''
-    if calculate == 'Single Point':
-        calcStr = 'NOOPT'
-    elif calculate == 'Equilibrium Geometry':
+    calcStr = ""
+    if calculate == "Single Point":
+        calcStr = "NOOPT"
+    elif calculate == "Equilibrium Geometry":
         pass
-    elif calculate == 'Frequencies':
-        calcStr = 'FORCE'
-    elif calculate == 'Transition State':
-        calcStr = 'SADDLE'
+    elif calculate == "Frequencies":
+        calcStr = "FORCE"
+    elif calculate == "Transition State":
+        calcStr = "SADDLE"
     else:
-        raise Exception('Unhandled calculation type: %s' % calculate)
+        raise NotImplementedError(f"Unhandled calculation type: {calculate}")
 
     eps = ""
     dielectric = ""
@@ -81,41 +111,37 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str]]:
         eps = "EPS=" + dielectric
 
     if multiplicity > 1:
-        hftype = 'UHF'
+        hftype = "UHF"
 
     # Charge, mult, calc type, theory:
-    generated_input += ' AUX LARGE CHARGE=%d %s %s %s %s PDBOUT THREADS=%d %s\n' %\
-        (charge, multStr, calcStr, theory, eps, nCores, hftype)
+    generated_input += f" AUX LARGE CHARGE={charge:d} {multStr} {calcStr} {theory} {eps} PDBOUT THREADS={nCores:d} {hftype}\n"
 
     # Title
-    generated_input += '%s\n\n' % title
+    generated_input += f"{title}\n\n"
 
     # Coordinates
-    if calculate == 'Single Point':
-        generated_input += '$$coords:Sx0y0z0$$\n'
+    if calculate == "Single Point":
+        generated_input += "$$coords:Sx0y0z0$$\n"
     else:
-        generated_input += '$$coords:Sx1y1z1$$\n'
+        generated_input += "$$coords:Sx1y1z1$$\n"
 
     return generated_input, warnings
 
 
-def generateInput(input_json: dict, debug: bool) -> dict:
+def generateInput(input_json: dict, debug: bool) -> dict:  # noqa: FBT001
 
     generated_input, warnings = generateInputFile(input_json)
 
-    filename = input_json['options']['Filename Base'] + '.mop'
+    filename = input_json["options"]["Filename Base"] + ".mop"
 
     result = {
-        'files': [
-            {'filename': filename, 
-            'contents': generated_input,
-            'highlightStyles': ['default']}
+        "files": [
+            {"filename": filename, "contents": generated_input, "highlightStyles": ["default"]}
         ],
-        'mainFile': filename,
+        "mainFile": filename,
     }
 
     if warnings:
-        result['warnings'] = warnings
+        result["warnings"] = warnings
 
     return result
-

@@ -7,11 +7,10 @@
 # ******************************************************************************
 """Base classes and functions for input blocks in ORCA."""
 
-from dataclasses import dataclass
 from collections.abc import Sequence
-from typing import NewType
+from dataclasses import dataclass
 from enum import Enum
-
+from typing import NewType
 
 """Strings that are specially recognized by ORCA, for example in the
 %method block you can use ``method HF`` and it will be recognized
@@ -55,9 +54,7 @@ class BlockKeyword:
         | type[dict]
     )
     default: ORCAString | str | bool | int | float | Sequence | dict | None = None
-    options: tuple[ORCAString | str | bool | int | float | Sequence | dict] | None = (
-        None
-    )
+    options: tuple[ORCAString | str | bool | int | float | Sequence | dict] | None = None
     minimum: int | float | None = None
     maximum: int | float | None = None
 
@@ -74,9 +71,7 @@ class BlockKeyword:
             return "integer"
         elif self._dtype is float:
             return "float"
-        elif self._dtype is Sequence:
-            return "string"
-        elif self._dtype is dict:
+        elif self._dtype is Sequence or self._dtype is dict:
             return "string"
         else:
             raise ValueError(
@@ -94,9 +89,8 @@ class BlockKeyword:
         A keyword that is a sequence or dict should probably never have
         a default.
         """
-        if isinstance(value, str):
-            if value == "":
-                return True
+        if isinstance(value, str) and value == "":
+            return True
 
         if self.default is None:
             if isinstance(value, (str, Sequence, dict)):
@@ -106,21 +100,12 @@ class BlockKeyword:
                 return False  # If it is a number it must exist.
         else:
             if isinstance(value, (bool, int, float)):
-                if value == self.default:
-                    return True
-                else:
-                    return False
+                return value == self.default
             elif isinstance(value, str):
                 if isinstance(self.options, Sequence):
-                    if value == self.options[self.default]:
-                        return True
-                    else:
-                        return False
+                    return value == self.options[self.default]
                 else:
-                    if value == self.default:
-                        return True
-                    else:
-                        return False
+                    return value == self.default
         raise RuntimeError(
             f"Something went wrong with checking the default for {self} against {value}."
         )
@@ -132,11 +117,11 @@ class BlockEnum(BlockKeyword, Enum):
     def __new__(
         cls,
         key_name: str,
-        _dtype: ORCAString | str | bool | int | float | Sequence,
-        default: ORCAString | str | bool | int | float | Sequence | None = None,
+        _dtype: ORCAString | str | bool | int | float | Sequence,  # noqa: FBT001, PYI041
+        default: ORCAString | str | bool | int | float | Sequence | None = None,  # noqa: FBT001, PYI041
         options: tuple[ORCAString | str | bool | int | float | Sequence] | None = None,
-        minimum: int | float | None = None,
-        maximum: int | float | None = None,
+        minimum: int | float | None = None,  # noqa: PYI041
+        maximum: int | float | None = None,  # noqa: PYI041
     ):
         self = BlockKeyword.__new__(cls)
         self._value_ = key_name
@@ -163,11 +148,11 @@ class NestedBlockEnum(BlockKeyword, Enum):
     def __new__(
         cls,
         key_name: str,
-        _dtype: ORCAString | str | bool | int | float | Sequence,
-        default: ORCAString | str | bool | int | float | Sequence | None = None,
+        _dtype: ORCAString | str | bool | int | float | Sequence,  # noqa: FBT001, PYI041
+        default: ORCAString | str | bool | int | float | Sequence | None = None,  # noqa: FBT001, PYI041
         options: tuple[ORCAString | str | bool | int | float | Sequence] | None = None,
-        minimum: int | float | None = None,
-        maximum: int | float | None = None,
+        minimum: int | float | None = None,  # noqa: PYI041
+        maximum: int | float | None = None,  # noqa: PYI041
     ):
         self = BlockKeyword.__new__(cls)
         self._value_ = key_name
@@ -176,7 +161,7 @@ class NestedBlockEnum(BlockKeyword, Enum):
 
 def format_block_keyword(
     kwd: BlockKeyword,
-    val: str | bool | int | float | Sequence,
+    val: str | bool | int | float | Sequence,  # noqa: FBT001, PYI041
 ) -> str:
 
     if kwd._dtype is str:

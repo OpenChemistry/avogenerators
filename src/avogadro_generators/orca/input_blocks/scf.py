@@ -8,7 +8,7 @@
 """Classes and methods for the %scf block in ORCA."""
 
 # from collections.abc import Sequence
-from .block_base import BlockEnum, ORCAString, NestedBlockEnum
+from .block_base import BlockEnum, NestedBlockEnum, ORCAString
 
 
 # fmt: off

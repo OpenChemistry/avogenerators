@@ -7,28 +7,28 @@
 # ******************************************************************************
 """Input generation for ORCA (https://www.faccts.de/orca/)."""
 
-from .input_blocks import SCF, Basis, ElProp, format_block_keyword
-from .simple_keywords import (
-    RunType,
-    Output,
-    match_simple_keyword,
-)
-from .dft import Composite, Functionals, Disp
-from .wft import MP2, CoupledCluster
+from collections.abc import Sequence
+
+from ..utilities import Element
 from .basis_sets import (
-    PopleBasisSet,
-    def2BasisSet,
     JensenBasisSet,
-    ccBasisSet,
+    PopleBasisSet,
     RelativisticBasisSet,
-    get_basis_set,
+    ccBasisSet,
+    def2BasisSet,
     get_aux_basis,
     get_basis_family,
+    get_basis_set,
 )
-from .implicit_solvation import Solvent, SolvationModel
-from ..utilities import Element
-
-from collections.abc import Sequence
+from .dft import Composite, Disp, Functionals
+from .implicit_solvation import SolvationModel, Solvent
+from .input_blocks import SCF, Basis, ElProp, format_block_keyword
+from .simple_keywords import (
+    Output,
+    RunType,
+    match_simple_keyword,
+)
+from .wft import MP2, CoupledCluster
 
 
 def write_block(block_name: str, keys_vals: dict):
@@ -83,9 +83,7 @@ def get_fragments(cjson: dict) -> list[list[int]]:
     return [fragments[layer] for layer in sorted(fragments)]
 
 
-def get_fragment_charge_and_multiplicity(
-    cjson: dict, fragment: Sequence[int]
-) -> tuple[int, int]:
+def get_fragment_charge_and_multiplicity(cjson: dict, fragment: Sequence[int]) -> tuple[int, int]:
     """Work out the charge and multiplicity of one fragment.
 
     The formal charges of the fragment's atoms sum to its charge, and the
@@ -188,9 +186,7 @@ def write_counterpoise_jobs(
     # so they redefine %frag as well rather than inherit indices that no
     # longer point at anything.
     for number, fragment in zip(numbers, fragments, strict=True):
-        frag_charge, frag_multiplicity = get_fragment_charge_and_multiplicity(
-            cjson, fragment
-        )
+        frag_charge, frag_multiplicity = get_fragment_charge_and_multiplicity(cjson, fragment)
         jobs.append(
             f"# Fragment {number} in its own basis set\n"
             f"{header}"
@@ -206,9 +202,7 @@ def write_counterpoise_jobs(
     # CP-corrected interaction energy once subtracted from its energy
     for number, fragment in zip(numbers, fragments, strict=True):
         ghosts = [other for other in numbers if other != number]
-        frag_charge, frag_multiplicity = get_fragment_charge_and_multiplicity(
-            cjson, fragment
-        )
+        frag_charge, frag_multiplicity = get_fragment_charge_and_multiplicity(cjson, fragment)
         jobs.append(
             f"# Fragment {number} in the basis set of the complex\n"
             f"{header}"
@@ -319,9 +313,7 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str], list[str]]:
         simple_keywords.append(method.value)
     elif isinstance(method, (MP2, CoupledCluster)):
         if auxc_basis is None:
-            warnings.append(
-                "No AuxC basis selected, please select one from the Basis tab."
-            )
+            warnings.append("No AuxC basis selected, please select one from the Basis tab.")
             simple_keywords.extend([method.value, basis_set])
         elif auxc_basis.parent_basis != basis_set.__class__.__name__:
             aux_fam = get_basis_family(auxc_basis.parent_basis)
@@ -387,9 +379,7 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str], list[str]]:
 
     # check for constraints and frozen atoms in cjson
     has_constraints = (
-        constrain is True
-        and "atoms" in cjson
-        and ("constraints" in cjson or "frozen" in cjson)
+        constrain is True and "atoms" in cjson and ("constraints" in cjson or "frozen" in cjson)
     )
 
     if has_constraints and counterpoise:
@@ -416,15 +406,11 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str], list[str]]:
                 if len(constraint) == 4:
                     # angle
                     value, atom1, atom2, atom3 = constraint
-                    blocks += (
-                        f"{{ A {atom1} {atom2} {atom3} {value:.6f} C }} \n"
-                    )
+                    blocks += f"{{ A {atom1} {atom2} {atom3} {value:.6f} C }} \n"
                 if len(constraint) == 5:
                     # torsion / dihedral
                     value, atom1, atom2, atom3, atom4 = constraint
-                    blocks += (
-                        f"{{ D {atom1} {atom2} {atom3} {atom4} {value:.6f} C }} \n"
-                    )
+                    blocks += f"{{ D {atom1} {atom2} {atom3} {atom4} {value:.6f} C }} \n"
 
         # look for frozen atoms
         if "frozen" in cjson["atoms"]:
@@ -518,8 +504,7 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str], list[str]]:
 
     if counterpoise:
         fragment_charges = [
-            get_fragment_charge_and_multiplicity(cjson, fragment)
-            for fragment in fragments
+            get_fragment_charge_and_multiplicity(cjson, fragment) for fragment in fragments
         ]
         if sum(frag_charge for frag_charge, _ in fragment_charges) != charge:
             warnings.append(
@@ -547,7 +532,7 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str], list[str]]:
     return generated_input, warnings, syntax_groups
 
 
-def generateInput(input_json: dict, debug: bool) -> dict:
+def generateInput(input_json: dict, debug: bool) -> dict:  # noqa: FBT001
 
     generated_input, warnings, syntax_groups = generateInputFile(input_json)
 

@@ -1,1 +1,1 @@
-from .elements import Element
+from .elements import Element as Element

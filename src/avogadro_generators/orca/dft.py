@@ -6,7 +6,7 @@
 # This source code is released under the New BSD License, (the "License").
 # ******************************************************************************
 from dataclasses import dataclass
-from enum import Enum, StrEnum, Flag, auto
+from enum import Enum, Flag, StrEnum, auto
 
 
 class Disp(Flag):

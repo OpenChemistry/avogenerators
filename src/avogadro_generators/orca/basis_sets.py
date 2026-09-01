@@ -5,9 +5,10 @@
 #
 # This source code is released under the New BSD License, (the "License").
 # ******************************************************************************
+import re
 from dataclasses import dataclass
 from enum import Enum
-import re
+
 from ..utilities import Element
 
 

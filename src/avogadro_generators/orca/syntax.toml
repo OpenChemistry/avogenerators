@@ -3,7 +3,7 @@ format.preset = "keyword"
 patterns = [
     # Brace delimiters, {}
     { regexp = '({).*(})'},
-    # Constraints, `B`ond, `A`ngle, `D`ihedral, X, Y, Z
+    # Constraints, Bond, Angle, Dihedral, X, Y, Z
     # Specifically matches the `{` character, the `[BADXYZ]` character,
     # the `C` character, and the `}` character
     { regexp = '\s(?:({) ([BADXYZ]) )(?:[-\+]?[\.0-9]+(?:[eEdD][-\+]?[\.0-9]+)? ?)+(?: (C) (}))\s' },

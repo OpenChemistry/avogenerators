@@ -19,13 +19,22 @@ authors =  [
 license = "BSD-3-Clause"
 description = "Scripts for generating input files for computational chemistry packages"
 readme = "README.md"
+requires-python = ">=3.11"
 
 [project.scripts]
 avogadro-generators = "avogadro_generators:main"
 
 [build-system]
-requires = ["uv_build>=0.10.2,<0.11.0"]
+requires = ["uv_build>=0.10.2,<0.12.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "codespell>=2.4.3",
+    "pytest>=9.1.1",
+    "ruff>=0.16.4",
+]
+
 
 [tool.avogadro]
 minimum-avogadro-version = "1.103"
@@ -129,3 +138,37 @@ platforms = ["win-64", "win-arm64", "linux-64", "linux-aarch64", "osx-64", "osx-
 avogadro_generators = { path = ".", editable = true }
 
 [tool.pixi.tasks]
+
+[tool.codespell]
+ignore-words-list = "ba,nd,te" # Elements
+skip = "pyproject.toml"
+
+[tool.ruff]
+line-length = 100
+indent-width = 4
+
+target-version = "py311"
+extend-include = ["./scripts/*.py"]
+
+[tool.ruff.lint]
+extend-select = [
+    "S",
+    "I",
+    "FBT",
+    "A",
+    "B905", # zip without explicit `strict` argument.
+]
+allowed-confusables = [
+    "α",
+    "γ",
+    "ρ",
+    "σ",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Line too long. Prefer long single line for enumeration members, avoids super long files
+"src/avogadro_generators/orca/input_blocks/*.py" = ["E501"]
+"src/avogadro_generators/orca/implicit_solvation.py" = ["E501"]
+"src/avogadro_generators/orca/libxc.py" = ["E501"]
+"src/avogadro_generators/orca/basis_sets.py" = ["E501"]
+"src/avogadro_generators/orca/dft.py" = ["E501"]

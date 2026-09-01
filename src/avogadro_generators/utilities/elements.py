@@ -2,8 +2,8 @@
 
 from enum import Enum
 
-class Element(Enum):
 
+class Element(Enum):
     def __new__(cls, value):
         self = object.__new__(cls)
         self._value_ = value
@@ -20,6 +20,7 @@ class Element(Enum):
     def symbol(self) -> str:
         return self.name
 
+    # fmt: off
     Xx = 0
     H  = 1
     He = 2
@@ -139,3 +140,4 @@ class Element(Enum):
     Lv = 116
     Ts = 117
     Og = 118
+    # fmt: on

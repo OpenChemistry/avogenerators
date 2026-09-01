@@ -7,8 +7,8 @@
 # ******************************************************************************
 """Classes and methods for implicit solvation."""
 
-from enum import Enum, Flag, auto
 from dataclasses import dataclass
+from enum import Enum, Flag, auto
 
 
 # fmt: off

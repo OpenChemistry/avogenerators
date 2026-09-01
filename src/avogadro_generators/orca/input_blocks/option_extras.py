@@ -23,9 +23,8 @@ potential options for a user.
 """
 
 from .basis import Basis
-from .scf import SCF
 from .elprop import ElProp
-
+from .scf import SCF
 
 # fmt: off
 basis_extras = {

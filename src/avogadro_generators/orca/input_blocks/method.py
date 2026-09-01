@@ -11,6 +11,7 @@ WORK IN PROGRESS!!
 """
 
 from collections.abc import Sequence
+
 from .block_base import BlockEnum, ORCAString
 
 

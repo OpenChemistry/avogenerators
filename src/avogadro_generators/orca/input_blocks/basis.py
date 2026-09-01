@@ -7,12 +7,12 @@
 # ******************************************************************************
 """Classes and methods for the %basis block in ORCA."""
 
-from .block_base import BlockEnum, ORCAString
 from ..basis_sets import (
+    AuxCBasisSet,
     AuxJBasisSet,
     AuxJKBasisSet,
-    AuxCBasisSet,
 )
+from .block_base import BlockEnum, ORCAString
 
 
 # fmt: off
