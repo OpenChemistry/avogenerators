@@ -156,25 +156,27 @@ def write_counterpoise_jobs(
     of the complex less the ghosted fragment energies, and the BSSE is how
     much each ghosted fragment falls below the same fragment on its own.
     """
-    jobs = [
-        "# Boys-Bernardi counterpoise correction, one job per fragment.\n"
-        "# Writing E(i) for a fragment in its own basis set and E(i, ghost)\n"
-        "# for the same fragment in the basis set of the complex:\n"
-        "#\n"
-        "#   interaction energy = E(complex) - sum_i E(i, ghost)\n"
-        "#   BSSE               = sum_i [ E(i) - E(i, ghost) ]\n"
-        "#\n"
-        "# Both are at the geometry of the complex, so neither includes the\n"
-        "# energy the fragments gain by relaxing once they come apart.\n"
-        "\n"
-        "# The complex, in its own basis set\n"
-        f"{header}"
-        '%id "complex"\n'
-        f"{frag_block}"
-        f"{blocks}"
-        f"* xyz {charge} {multiplicity}\n"
-        "$$coords:____Sxyz$$\n"
-        "*\n"
+    jobs: list[str] = [
+        (
+            "# Boys-Bernardi counterpoise correction, one job per fragment.\n"
+            "# Writing E(i) for a fragment in its own basis set and E(i, ghost)\n"
+            "# for the same fragment in the basis set of the complex:\n"
+            "#\n"
+            "#   interaction energy = E(complex) - sum_i E(i, ghost)\n"
+            "#   BSSE               = sum_i [ E(i) - E(i, ghost) ]\n"
+            "#\n"
+            "# Both are at the geometry of the complex, so neither includes the\n"
+            "# energy the fragments gain by relaxing once they come apart.\n"
+            "\n"
+            "# The complex, in its own basis set\n"
+            f"{header}"
+            '%id "complex"\n'
+            f"{frag_block}"
+            f"{blocks}"
+            f"* xyz {charge} {multiplicity}\n"
+            "$$coords:____Sxyz$$\n"
+            "*\n"
+        )
     ]
 
     numbers = list(range(1, len(fragments) + 1))
@@ -185,7 +187,7 @@ def write_counterpoise_jobs(
     # only fragment these jobs have. Their atoms are renumbered from zero,
     # so they redefine %frag as well rather than inherit indices that no
     # longer point at anything.
-    for number, fragment in zip(numbers, fragments):
+    for number, fragment in zip(numbers, fragments, strict=True):
         frag_charge, frag_multiplicity = get_fragment_charge_and_multiplicity(
             cjson, fragment
         )
@@ -202,7 +204,7 @@ def write_counterpoise_jobs(
 
     # The same fragments in the basis set of the complex, giving the
     # CP-corrected interaction energy once subtracted from its energy
-    for number, fragment in zip(numbers, fragments):
+    for number, fragment in zip(numbers, fragments, strict=True):
         ghosts = [other for other in numbers if other != number]
         frag_charge, frag_multiplicity = get_fragment_charge_and_multiplicity(
             cjson, fragment
@@ -383,13 +385,21 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str], list[str]]:
     if nprocs != 1:
         header += f"%pal\n    nprocs = {nprocs}\nend\n"
 
-    if (
+    # check for constraints and frozen atoms in cjson
+    has_constraints = (
         constrain is True
-        and not counterpoise
         and "atoms" in cjson
         and ("constraints" in cjson or "frozen" in cjson)
-    ):
-        # check for constraints and frozen atoms in cjson
+    )
+
+    if has_constraints and counterpoise:
+        warnings.append(
+            "The constraints were left out of the input file. A counterpoise "
+            "correction is a series of single points, and its %geom block "
+            "holds the ghost fragments instead."
+        )
+
+    if has_constraints and not counterpoise:
         blocks += "%geom\n"
         blocks += "    Constraints \n"
 

@@ -833,5 +833,6 @@ patterns = [
     { regexp = '!' },
     # Some nested sub-blocks.
     { regexp = '\b(Constraints)\s', caseSensitive = false },
+    { regexp = '\b(Definition)\s', caseSensitive = false },
     { regexp = '\b(TRAH)\s', caseSensitive = false },
 ]
