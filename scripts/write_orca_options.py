@@ -129,8 +129,12 @@ class BasicTab:
                 RunType.OPTTS,
                 RunType.FREQ,
                 RunType.NUMFREQ,
+                RunType.COUNTERPOISE,
             ),
-            toolTip="Type of calculation to run",
+            toolTip=(
+                "Type of calculation to run. Counterpoise treats each "
+                "Avogadro layer as one fragment of the complex."
+            ),
         ),
         "Theory": BasicOption(
             dtype="stringList",
