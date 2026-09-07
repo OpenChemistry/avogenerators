@@ -171,12 +171,21 @@ values = [
     "NL",
     "SCNL",
 ]
+order = 0
 tab = "Basic"
 
 ["basic_print_mos"]
 label = "Print Molecular Orbitals"
 type = "boolean"
 default = true
+order = 1
+tab = "Basic"
+
+["basic_constrain"]
+label = "Use Constraints"
+type = "boolean"
+default = false
+order = 2
 tab = "Basic"
 
 ["basic_print_level"]
@@ -189,12 +198,15 @@ values = [
     "NormalPrint",
     "LargePrint",
 ]
+order = 3
 tab = "Basic"
 
-["basic_constrain"]
-label = "Use Constraints"
+["basic_use_symmetry"]
+label = "Use Symmetry"
 type = "boolean"
 default = false
+toolTip = "Add UseSym keyword."
+order = 4
 tab = "Basic"
 
 ["basic_simple_keywords"]
@@ -202,6 +214,7 @@ label = "Additional Simple Keywords"
 type = "string"
 default = ""
 toolTip = "Comma- or whitespace-separated list of simple input keywords."
+order = 5
 tab = "Basic"
 
 [Basis_pople]

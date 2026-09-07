@@ -67,6 +67,7 @@ patterns = [
     { regexp = '\b(UNO)\s',              caseSensitive = false},
     { regexp = '\b(NoPropFile)\s',       caseSensitive = false},
     { regexp = '\b(KeepTransDensity)\s', caseSensitive = false},
+    { regexp = '\b(UseSym)\s',           caseSensitive = false},
     { regexp = '\b(COSJXC)\s',           caseSensitive = false},
     { regexp = '\b(NoCOSX)\s',           caseSensitive = false},
     { regexp = '\b(NoRI)\s',             caseSensitive = false},
