@@ -45,6 +45,7 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str]]:
     generated_input += "molecule {\n"
     generated_input += f"{charge} {multiplicity}\n"
     generated_input += "$$coords:___Sxyz$$\n"
+    generated_input += "$$zmat:___S_I_R_J_A_K_T$$\n"
     generated_input += "}\n\n"
     if calcStr == "optimize":
         generated_input += "set optking {\n"
