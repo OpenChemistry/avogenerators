@@ -277,6 +277,16 @@ class BasicTab:
             default=False,
             label="Use Constraints",
         ),
+        "Coordinates": BasicOption(
+            dtype="stringList",
+            default=0,
+            label="Coordinates",
+            options=("Cartesian", "Z-Matrix / Internal"),
+            toolTip=(
+                "Write the geometry as Cartesian coordinates or as a "
+                "z-matrix of bond lengths, angles and torsions."
+            ),
+        ),
         "basic_simple_keywords": BasicOption(
             dtype="string",
             default="",

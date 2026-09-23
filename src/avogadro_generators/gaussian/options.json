@@ -118,5 +118,15 @@
     "tab": "Alternate",
     "type": "string",
     "default": ""
+  },
+  "Coordinates": {
+    "type": "stringList",
+    "default": 0,
+    "values": [
+      "Cartesian",
+      "Z-Matrix / Internal"
+    ],
+    "toolTip": "Write the geometry as Cartesian coordinates or as a z-matrix of bond lengths, angles and torsions.",
+    "tab": "Standard"
   }
 }

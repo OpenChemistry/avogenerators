@@ -24,6 +24,7 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str]]:
     optionaldielectric = opts["Other Solvent Dielectric"]
     hftype = opts["HF Type"]
     cosmo = opts["COSMO"]
+    zmatrix = opts.get("Coordinates", "").startswith("Z-Matrix")
     solventlist = {
         "Acetic acid": 6.15,
         "Acetone": 20.7,
@@ -119,11 +120,14 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str]]:
     # Title
     generated_input += f"{title}\n\n"
 
-    # Coordinates
-    if calculate == "Single Point":
-        generated_input += "$$coords:Sx0y0z0$$\n"
+    # Coordinates. MOPAC tells internal coordinates from Cartesian ones by
+    # the connectivity columns alone -- there is no keyword -- and takes an
+    # optimization flag after each value either way.
+    flag = "0" if calculate == "Single Point" else "1"
+    if zmatrix:
+        generated_input += f"$$zmatpad:_S_R_{flag}_A_{flag}_T_{flag}_I_J_K$$\n"
     else:
-        generated_input += "$$coords:Sx1y1z1$$\n"
+        generated_input += f"$$coords:Sx{flag}y{flag}z{flag}$$\n"
 
     return generated_input, warnings
 

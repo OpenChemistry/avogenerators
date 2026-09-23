@@ -502,6 +502,11 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str], list[str]]:
         )
         counterpoise = False
 
+    # ORCA names the coordinate format on the block header, so the choice is
+    # made here rather than left to Avogadro. A counterpoise job writes each
+    # fragment out separately and stays Cartesian.
+    zmatrix = not counterpoise and opts.get("Coordinates", "").startswith("Z-Matrix")
+
     if counterpoise:
         fragment_charges = [
             get_fragment_charge_and_multiplicity(cjson, fragment) for fragment in fragments
@@ -525,8 +530,14 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str], list[str]]:
         generated_input += "\n"
     else:
         generated_input = preamble + header + frag_block + blocks
-        generated_input += f"* xyz {charge} {multiplicity}\n"
-        generated_input += "$$coords:____Sxyz$$\n"
+        if zmatrix:
+            # "gzmt" is the Gaussian-style z-matrix; ORCA's own "int" format
+            # puts the three reference columns before the values instead.
+            generated_input += f"* gzmt {charge} {multiplicity}\n"
+            generated_input += "$$zmat:____S_I_R_J_A_K_T$$\n"
+        else:
+            generated_input += f"* xyz {charge} {multiplicity}\n"
+            generated_input += "$$coords:____Sxyz$$\n"
         generated_input += "*\n\n\n"
 
     return generated_input, warnings, syntax_groups

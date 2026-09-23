@@ -21,6 +21,7 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str]]:
     charge = opts["Charge"]
     multiplicity = opts["Multiplicity"]
     oldVersion = opts["Use Pre-2009.1 Format"]
+    zmatrix = opts.get("Coordinates", "").startswith("Z-Matrix")
 
     # Convert to code-specific strings
     basisStr = ""
@@ -81,18 +82,27 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str]]:
 
     generated_input += f"basis, {basisStr}\n\n"
 
-    if oldVersion:
-        generated_input += "geomtyp=xyz\n"
-    generated_input += "geometry={\n"
-    if oldVersion:
-        numAtoms = 0
-        try:
-            numAtoms = len(cjson["atoms"]["elements"]["number"])
-        except KeyError:
+    if zmatrix:
+        # Molpro measures lengths in bohr unless told otherwise, so the unit
+        # has to be stated: a z-matrix read as bohr is silently wrong rather
+        # than an error.
+        generated_input += "geomtyp=zmat\n"
+        generated_input += "geometry={\n"
+        generated_input += "ang\n"
+        generated_input += "$$zmat:S,I,R,J,A,K,T$$\n"
+    else:
+        if oldVersion:
+            generated_input += "geomtyp=xyz\n"
+        generated_input += "geometry={\n"
+        if oldVersion:
             numAtoms = 0
-        generated_input += f"{numAtoms:d}\n\n"
+            try:
+                numAtoms = len(cjson["atoms"]["elements"]["number"])
+            except KeyError:
+                numAtoms = 0
+            generated_input += f"{numAtoms:d}\n\n"
 
-    generated_input += "$$coords:Sxyz$$\n"
+        generated_input += "$$coords:Sxyz$$\n"
     generated_input += "}\n\n"
 
     generated_input += f"{theoryStr}\n"
