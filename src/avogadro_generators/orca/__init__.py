@@ -531,10 +531,11 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str], list[str]]:
     else:
         generated_input = preamble + header + frag_block + blocks
         if zmatrix:
-            # "gzmt" is the Gaussian-style z-matrix; ORCA's own "int" format
-            # puts the three reference columns before the values instead.
-            generated_input += f"* gzmt {charge} {multiplicity}\n"
-            generated_input += "$$zmat:____S_I_R_J_A_K_T$$\n"
+            # ORCA's own "int" format, rather than the Gaussian-style "gzmt":
+            # the three reference rows come before the three values, and
+            # every row is padded out to full width with zeros.
+            generated_input += f"* int {charge} {multiplicity}\n"
+            generated_input += "$$zmatpad:____S_I_J_K_R_A_T$$\n"
         else:
             generated_input += f"* xyz {charge} {multiplicity}\n"
             generated_input += "$$coords:____Sxyz$$\n"
