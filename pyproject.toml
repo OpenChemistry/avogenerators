@@ -37,7 +37,7 @@ dev = [
 
 
 [tool.avogadro]
-minimum-avogadro-version = "1.103"
+minimum-avogadro-version = "2.1"
 
 [[tool.avogadro.input-generators]]
 identifier = "dalton"

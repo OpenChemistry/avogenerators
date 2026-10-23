@@ -71,8 +71,10 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str]]:
     # Charge/Multiplicity
     generated_input += f"{charge} {multiplicity}\n"
 
-    # Coordinates
+    # Coordinates. Both forms are written; Avogadro keeps the one the
+    # "Coordinates" option selects and removes the other line.
     generated_input += "$$coords:Sxyz$$\n"
+    generated_input += "$$zmat:_S_I_R_J_A_K_T$$\n"
 
     # The gaussian code is irritatingly fickle -- it *will* silently crash if
     # this extra, otherwise unnecessary newline is not present at the end of the

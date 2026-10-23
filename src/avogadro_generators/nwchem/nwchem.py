@@ -33,6 +33,7 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str]]:
     opts = input_json["options"]
     title = opts["Title"]
     calculate = opts["Calculation Type"]
+    zmatrix = opts.get("Coordinates", "").startswith("Z-Matrix")
     theory = opts["Theory"]
     basis = opts["Basis"]
     multiplicity = opts["Multiplicity"]
@@ -47,9 +48,15 @@ def generateInputFile(input_json: dict) -> tuple[str, list[str]]:
     # Charge
     nwfile += f"charge {charge:d}\n\n"
 
-    # Coordinates
+    # Coordinates. A z-matrix goes in its own sub-block, so the surrounding
+    # syntax differs and the choice is made here rather than left to Avogadro.
     nwfile += "geometry units angstroms print xyz autosym\n"
-    nwfile += "$$coords:Sxyz$$\n"
+    if zmatrix:
+        nwfile += "  zmatrix\n"
+        nwfile += "$$zmat:___S_I_R_J_A_K_T$$\n"
+        nwfile += "  end\n"
+    else:
+        nwfile += "$$coords:Sxyz$$\n"
     nwfile += "end\n\n"
 
     # Basis
