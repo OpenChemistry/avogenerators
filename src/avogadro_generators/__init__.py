@@ -49,8 +49,6 @@ def main():
     output = generateInput(inp, args.debug)
 
     if args.debug:
-        output["files"].append(
-            {"filename": "debug_info", "contents": json.dumps(inp, indent=2)}
-        )
+        output["files"].append({"filename": "debug_info", "contents": json.dumps(inp, indent=2)})
 
     print(json.dumps(output))
